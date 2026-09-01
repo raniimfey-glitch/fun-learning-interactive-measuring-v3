@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "id": "/?source=pwa",
+  "name": "السَّعَاتُ التَّفَاعُلِيَّةُ",
+  "short_name": "السعات التفاعلية",
+  "description": "تطبيق تعليمي تفاعلي حديث للأطفال لاستكشاف وقياس السعات (اللتر والمليلتر) مع أنشطة ومحاكاة ونظام نطق عربي فصيح",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#f0f9ff",
+  "theme_color": "#0284c7",
+  "dir": "rtl",
+  "lang": "ar",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-explore-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "لوحة استكشاف ومقارنة وحدات قياس السعات باللتر والمليلتر"
+    },
+    {
+      "src": "/screenshots/screenshot-pour-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "نشاط محاكاة صب وملء السوائل في الأوعية المدرجة"
+    },
+    {
+      "src": "/screenshots/screenshot-quiz-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "تحدي واختبارات السعات التفاعلية مع نظام التقييم الذكي"
+    },
+    {
+      "src": "/screenshots/screenshot-balance-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "نشاط مكمل السعة حتى 1000 مل وميزان السعات"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "محاكاة الصب والملء",
+      "short_name": "صبّ واملأ",
+      "description": "تجربة سكب السوائل والمقارنة باللتر والمليلتر",
+      "url": "/?tab=pour",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "تحدي قياس السعات",
+      "short_name": "تحدي السعات",
+      "description": "أسئلة وتحديات تفاعلية مع نظام تحفيزي ذكي",
+      "url": "/?tab=quiz",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "جدول ومقارنة السعات",
+      "short_name": "المقارنة",
+      "description": "استكشاف سعات اللتر والكسور الشائعة",
+      "url": "/?tab=compare",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "categories": [
+    "education",
+    "kids",
+    "math"
+  ]
+}

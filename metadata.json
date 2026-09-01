@@ -1,0 +1,7 @@
+{
+  "name": "السَّعَاتُ التَّفَاعُلِيَّةُ",
+  "description": "تطبيق تعليمي تفاعلي حديث للأطفال لاستكشاف وقياس السعات (اللتر والمليلتر) مع أنشطة ومحاكاة ونظام نطق عربي فصيح",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

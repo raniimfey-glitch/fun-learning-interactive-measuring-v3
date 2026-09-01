@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>السَّعَاتُ التَّفَاعُلِيَّةُ 💧 غير متصل بالإنترنت</title>
+    <meta name="theme-color" content="#0284c7" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 1.5rem;
+        text-align: center;
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      }
+      .icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+      }
+      p {
+        font-size: 0.95rem;
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #0284c7, #06b6d4);
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.85rem 1.75rem;
+        border-radius: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+      .sub-text {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="icon">💧</div>
+      <h1>أنت غير متصل بالإنترنت</h1>
+      <p>يمكنك مواصلة استخدام الأنشطة المحفوظة، أو الضغط على الزر أدناه لإعادة المحاولة عند توفر الاتصال.</p>
+      <button class="btn" onclick="window.location.reload()">🔄 إعادة المحاولة</button>
+      <div class="sub-text">You are currently offline • Interactive Capacities</div>
+    </div>
+  </body>
+</html>
