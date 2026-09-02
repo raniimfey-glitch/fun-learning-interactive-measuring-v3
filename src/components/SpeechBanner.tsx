@@ -60,7 +60,7 @@ export const SpeechBanner: React.FC = () => {
     <aside
       id="speech-banner"
       aria-live="polite"
-      className="fixed top-20 left-4 right-4 sm:right-auto sm:left-6 sm:max-w-md z-40 transition-all duration-300 pointer-events-none"
+      className="fixed bottom-22 left-4 right-4 sm:right-auto sm:left-6 sm:max-w-md z-30 transition-all duration-300 pointer-events-none"
     >
       <div className="bg-white/95 text-slate-900 backdrop-blur-md rounded-2xl p-3.5 shadow-2xl border-2 border-sky-300 flex items-center gap-3 pointer-events-auto select-none">
         {/* Animated Sound Wave Bars */}

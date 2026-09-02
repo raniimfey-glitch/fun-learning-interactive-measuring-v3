@@ -7,6 +7,15 @@ export const TRANSLATIONS = {
     appShortTitle: 'السَّعَاتُ التَّفَاعُلِيَّةُ',
     brandTag: '✨ التَّعْلِيمُ المُمْتِعُ | رَنِيم فَاي',
     appIconAlt: 'أيقونة قياس السعات',
+
+    // Two-View Navigation & Hub
+    backToHome: 'الرجوع للواجهة الرئيسية',
+    homeTitle: 'اختر نشاطك التعليمي',
+    homeSubtitle: 'مرحباً بك! انقر على أي نشاط للبدء في الاستكشاف والتعلم التفاعلي',
+    startActivity: 'ابدأ النشاط 🚀',
+    currentActivity: 'النشاط الحالي:',
+    activitiesTitle: 'الأنشطة التعليمية التفاعلية',
+    activitiesCount: '4 أنشطة ممتعة',
     
     // Navbar
     openScratchpad: 'لوح الحساب والرسم',
@@ -171,6 +180,15 @@ export const TRANSLATIONS = {
     appShortTitle: 'Interactive Capacities',
     brandTag: '✨ Fun Learning | Ranim Fay',
     appIconAlt: 'Capacity Measurement App Icon',
+
+    // Two-View Navigation & Hub
+    backToHome: 'Back to Main Menu',
+    homeTitle: 'Choose an Activity',
+    homeSubtitle: 'Welcome! Select an activity to start interactive learning',
+    startActivity: 'Start Activity 🚀',
+    currentActivity: 'Current Activity:',
+    activitiesTitle: 'Interactive Learning Activities',
+    activitiesCount: '4 Fun Activities',
 
     // Navbar
     openScratchpad: 'Scratchpad & Drawing Board',

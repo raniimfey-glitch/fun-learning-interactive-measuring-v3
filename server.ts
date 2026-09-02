@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Modality } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -30,74 +30,6 @@ async function startServer() {
   // Health check
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", geminiConfigured: !!process.env.GEMINI_API_KEY });
-  });
-
-  // In-memory audio cache for frequent educational phrases to avoid rate limits
-  const ttsCache = new Map<string, string>();
-
-  // Gemini TTS Endpoint for pristine pronunciation (Arabic & English)
-  app.post("/api/tts", async (req, res) => {
-    try {
-      const { text, lang = "ar", voice = lang === "en" ? "Aoede" : "Kore" } = req.body;
-      if (!text || typeof text !== "string") {
-        return res.status(400).json({ error: "Missing text parameter" });
-      }
-
-      const cleanText = text.trim();
-      const cacheKey = `${lang}_${voice}_${cleanText}`;
-      if (ttsCache.has(cacheKey)) {
-        return res.json({
-          success: true,
-          audioData: ttsCache.get(cacheKey),
-          mimeType: "audio/pcm;rate=24000",
-          cached: true,
-        });
-      }
-
-      const ai = getAI();
-      if (!ai) {
-        return res.status(200).json({
-          fallback: true,
-          message: "GEMINI_API_KEY not configured, using Web Speech",
-        });
-      }
-
-      const prompt = lang === "en"
-        ? `Say clearly and pleasantly: ${cleanText}`
-        : `انطق بوضوح وفصاحة: ${cleanText}`;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-tts-preview",
-        contents: [{ parts: [{ text: prompt }] }],
-        config: {
-          responseModalities: [Modality.AUDIO],
-          speechConfig: {
-            voiceConfig: {
-              prebuiltVoiceConfig: { voiceName: voice },
-            },
-          },
-        },
-      });
-
-      const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-      if (base64Audio) {
-        ttsCache.set(cacheKey, base64Audio);
-        return res.json({
-          success: true,
-          audioData: base64Audio,
-          mimeType: "audio/pcm;rate=24000",
-        });
-      }
-
-      return res.status(200).json({ fallback: true, message: "No audio stream returned" });
-    } catch (err: any) {
-      // Return 200 with fallback: true on quota or rate limit errors so client smoothly switches without uncaught network errors
-      return res.status(200).json({
-        fallback: true,
-        rateLimited: err?.status === "RESOURCE_EXHAUSTED" || err?.message?.includes("429") || err?.message?.includes("quota"),
-        error: err?.message || "TTS error",
-      });
-    }
   });
 
   // Arabic Phonetization & Tashkeel Enhancer Endpoint

@@ -1,15 +1,6 @@
 import { prepareForSpeech } from './arabicPhonetics';
 import { Language } from '../i18n/translations';
-
-export interface AudioSettings {
-  enabled: boolean;
-  rate: number; // 0.5 to 1.5
-  pitch: number; // 0.5 to 1.5
-  volume: number; // 0 to 1
-  voiceURI: string;
-  useGeminiTTS: boolean; // Server-side Gemini High-Quality Audio
-  autoPlayQuestion: boolean;
-}
+import { AudioSettings } from '../types';
 
 export type SpeechListener = (speaking: boolean, text: string) => void;
 
@@ -25,7 +16,7 @@ function prepareEnglishForSpeech(text: string): string {
   res = res.replace(/¼\s*(?:L|liters?|liter)?/gi, 'quarter of a liter');
   res = res.replace(/¾\s*(?:L|liters?|liter)?/gi, 'three quarters of a liter');
 
-  // Units
+  // Units & numbers
   res = res.replace(/(?<!\d)1000\s*(?:mL|ml|milliliters?)(?!\p{L})/giu, 'one thousand milliliters');
   res = res.replace(/(?<!\d)2000\s*(?:mL|ml|milliliters?)(?!\p{L})/giu, 'two thousand milliliters');
   res = res.replace(/(?<!\d)500\s*(?:mL|ml|milliliters?)(?!\p{L})/giu, 'five hundred milliliters');
@@ -53,11 +44,10 @@ export class SpeechEngine {
 
   private settings: AudioSettings = {
     enabled: true,
-    rate: 0.85, // clear pedagogical pacing
+    rate: 0.85, // clear pedagogical pacing for children
     pitch: 1.0,
     volume: 1.0,
     voiceURI: '',
-    useGeminiTTS: true,
     autoPlayQuestion: true,
   };
 
@@ -67,12 +57,8 @@ export class SpeechEngine {
   private currentUtterance: SpeechSynthesisUtterance | null = null;
   private isSpeaking = false;
   private currentText = '';
-
-  // Concurrency & overlap prevention
-  private currentRequestId = 0;
-  private currentAbortController: AbortController | null = null;
-  private activeAudioContext: AudioContext | null = null;
-  private activeAudioSource: AudioBufferSourceNode | null = null;
+  private activeUtteranceId = 0;
+  private watchdogTimer: any = null;
 
   private constructor() {
     this.initVoices();
@@ -108,7 +94,7 @@ export class SpeechEngine {
       // Filter for Arabic voices
       this.availableVoices = voices.filter(v => v.lang.toLowerCase().startsWith('ar'));
       
-      // Auto-select preferred Arabic voice if not set
+      // Auto-select preferred Arabic voice if not set or invalid
       if (!this.settings.voiceURI || !this.availableVoices.some(v => v.voiceURI === this.settings.voiceURI)) {
         const preferred = this.availableVoices.find(v => 
           v.name.toLowerCase().includes('google') ||
@@ -176,39 +162,16 @@ export class SpeechEngine {
   }
 
   /**
-   * Completely stops all active speech synthesis, Web Audio playback, and aborts pending network TTS requests
+   * Completely stops active speech synthesis and cancels all callbacks
    */
   public stop() {
-    this.currentRequestId++;
-
-    if (this.currentAbortController) {
-      try {
-        this.currentAbortController.abort();
-      } catch (e) {}
-      this.currentAbortController = null;
+    this.activeUtteranceId++;
+    
+    if (this.watchdogTimer) {
+      clearTimeout(this.watchdogTimer);
+      this.watchdogTimer = null;
     }
 
-    // Stop and disconnect Web Audio Source if playing
-    if (this.activeAudioSource) {
-      try {
-        this.activeAudioSource.onended = null;
-        this.activeAudioSource.stop();
-        this.activeAudioSource.disconnect();
-      } catch (e) {}
-      this.activeAudioSource = null;
-    }
-
-    // Close active Web Audio Context
-    if (this.activeAudioContext) {
-      try {
-        if (this.activeAudioContext.state !== 'closed') {
-          this.activeAudioContext.close();
-        }
-      } catch (e) {}
-      this.activeAudioContext = null;
-    }
-
-    // Cancel browser SpeechSynthesis with event detachment to prevent phantom callbacks
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       if (this.currentUtterance) {
         this.currentUtterance.onstart = null;
@@ -225,15 +188,19 @@ export class SpeechEngine {
   }
 
   /**
-   * Speaks text in current language (Arabic with full phonetics/tashkeel, or English)
+   * Speaks text using the single, unified speech engine with pristine phonetics
    */
-  public async speak(rawText: string, customVocalized?: string): Promise<void> {
+  public speak(rawText: string, customVocalized?: string): void {
     if (!this.settings.enabled || !rawText) {
       this.stop();
       return;
     }
 
-    // Hard stop all audio pipelines immediately
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      return;
+    }
+
+    // Stop any existing speech first
     this.stop();
 
     // Prepare phonetically vocalized text according to language
@@ -248,179 +215,72 @@ export class SpeechEngine {
 
     if (!textToSpeak.trim()) return;
 
-    const requestId = this.currentRequestId;
-    const abortController = new AbortController();
-    this.currentAbortController = abortController;
-
+    const utteranceId = ++this.activeUtteranceId;
     this.notify(true, textToSpeak);
 
-    // Primary engine: Server-side Gemini AI TTS
-    if (this.settings.useGeminiTTS) {
-      try {
-        const res = await fetch('/api/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            text: textToSpeak,
-            lang: this.language,
-            voice: this.language === 'en' ? 'Aoede' : 'Kore'
-          }),
-          signal: abortController.signal,
-        });
-
-        if (requestId !== this.currentRequestId) {
-          return;
-        }
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.audioData && requestId === this.currentRequestId) {
-            const played = await this.playPcmAudio(data.audioData, requestId);
-            if (played) return;
-          }
-        }
-      } catch (err: any) {
-        if (err?.name === 'AbortError' || requestId !== this.currentRequestId) {
-          return;
-        }
-      }
-    }
-
-    // Double-check active request ID before attempting fallback
-    if (requestId !== this.currentRequestId) {
-      return;
-    }
-
-    // Fallback: Web Speech API
-    this.speakWithWebSpeech(textToSpeak, requestId);
-  }
-
-  private speakWithWebSpeech(vocalizedText: string, requestId: number) {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      if (requestId === this.currentRequestId) {
-        this.notify(false, '');
-      }
-      return;
-    }
-
-    if (requestId !== this.currentRequestId) {
-      return;
-    }
-
     try {
-      window.speechSynthesis.cancel();
-    } catch (e) {}
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      this.currentUtterance = utterance;
 
-    const utterance = new SpeechSynthesisUtterance(vocalizedText);
-    this.currentUtterance = utterance;
+      utterance.lang = this.language === 'en' ? 'en-GB' : 'ar-SA';
+      utterance.rate = Math.max(0.6, Math.min(1.5, this.settings.rate));
+      utterance.pitch = Math.max(0.5, Math.min(1.5, this.settings.pitch));
+      utterance.volume = Math.max(0, Math.min(1.0, this.settings.volume));
 
-    utterance.lang = this.language === 'en' ? 'en-GB' : 'ar-SA';
-    utterance.rate = this.settings.rate;
-    utterance.pitch = this.settings.pitch;
-    utterance.volume = this.settings.volume;
-
-    // Pick selected voice
-    if (this.availableVoices.length === 0) {
-      this.initVoices();
-    }
-
-    const voice = this.availableVoices.find(v => v.voiceURI === this.settings.voiceURI) 
-      || this.availableVoices[0];
-    if (voice) {
-      utterance.voice = voice;
-      utterance.lang = voice.lang;
-    }
-
-    utterance.onend = () => {
-      if (requestId === this.currentRequestId) {
-        this.notify(false, '');
-        this.currentUtterance = null;
-      }
-    };
-
-    utterance.onerror = (e) => {
-      if (requestId === this.currentRequestId) {
-        this.notify(false, '');
-        this.currentUtterance = null;
-      }
-    };
-
-    window.speechSynthesis.speak(utterance);
-  }
-
-  private async playPcmAudio(base64: string, requestId: number): Promise<boolean> {
-    if (requestId !== this.currentRequestId) return false;
-
-    try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = new AudioContextClass({ sampleRate: 24000 });
-      
-      if (ctx.state === 'suspended') {
-        await ctx.resume();
+      // Refresh and apply selected voice
+      if (this.availableVoices.length === 0) {
+        this.initVoices();
       }
 
-      if (requestId !== this.currentRequestId) {
-        try { ctx.close(); } catch (e) {}
-        return false;
+      const voice = this.availableVoices.find(v => v.voiceURI === this.settings.voiceURI) 
+        || this.availableVoices[0];
+      if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
       }
 
-      this.activeAudioContext = ctx;
-
-      const binaryString = atob(base64);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-
-      // Convert 16-bit PCM little-endian to Float32
-      const numSamples = Math.floor(len / 2);
-      const audioBuffer = ctx.createBuffer(1, numSamples, 24000);
-      const channelData = audioBuffer.getChannelData(0);
-      const dataView = new DataView(bytes.buffer);
-
-      for (let i = 0; i < numSamples; i++) {
-        const int16 = dataView.getInt16(i * 2, true);
-        channelData[i] = int16 < 0 ? int16 / 32768 : int16 / 32767;
-      }
-
-      if (requestId !== this.currentRequestId) {
-        try { ctx.close(); } catch (e) {}
-        return false;
-      }
-
-      const source = ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      this.activeAudioSource = source;
-      
-      const gainNode = ctx.createGain();
-      gainNode.gain.value = this.settings.volume;
-      
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
-
-      source.onended = () => {
-        if (requestId === this.currentRequestId) {
-          this.activeAudioSource = null;
-          this.notify(false, '');
-          try {
-            ctx.close();
-          } catch (e) {}
+      utterance.onstart = () => {
+        if (utteranceId === this.activeUtteranceId) {
+          this.notify(true, textToSpeak);
         }
       };
 
-      // Make sure speech synthesis is cancelled before PCM playback starts
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch (e) {}
-      }
+      utterance.onend = () => {
+        if (utteranceId === this.activeUtteranceId) {
+          this.currentUtterance = null;
+          this.notify(false, '');
+          if (this.watchdogTimer) {
+            clearTimeout(this.watchdogTimer);
+            this.watchdogTimer = null;
+          }
+        }
+      };
 
-      source.start();
-      return true;
+      utterance.onerror = () => {
+        if (utteranceId === this.activeUtteranceId) {
+          this.currentUtterance = null;
+          this.notify(false, '');
+          if (this.watchdogTimer) {
+            clearTimeout(this.watchdogTimer);
+            this.watchdogTimer = null;
+          }
+        }
+      };
+
+      // Safety watchdog timer (estimated speaking duration + 3s buffer)
+      const estimatedDurationMs = Math.max(4000, (textToSpeak.length / 8) * 1000);
+      this.watchdogTimer = setTimeout(() => {
+        if (utteranceId === this.activeUtteranceId && this.isSpeaking) {
+          this.currentUtterance = null;
+          this.notify(false, '');
+        }
+      }, estimatedDurationMs);
+
+      window.speechSynthesis.speak(utterance);
     } catch (err) {
-      if (requestId === this.currentRequestId) {
-        console.warn('PCM audio playback failed:', err);
+      if (utteranceId === this.activeUtteranceId) {
+        this.notify(false, '');
       }
-      return false;
     }
   }
 }

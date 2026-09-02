@@ -65,6 +65,5 @@ export interface AudioSettings {
   pitch: number; // 0.8 - 1.2
   volume: number; // 0 - 1
   voiceURI: string;
-  useGeminiTTS: boolean;
   autoPlayQuestion: boolean;
 }

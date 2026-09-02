@@ -156,8 +156,20 @@ export const ScratchpadModal: React.FC<ScratchpadModalProps> = ({ isOpen, onClos
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-slate-900/50 backdrop-blur-xs animate-fade-in">
-      <div id="scratchpad-modal-content" className="bg-white rounded-3xl p-5 w-full max-w-lg shadow-2xl border border-slate-200 overflow-hidden">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-slate-900/50 backdrop-blur-xs animate-fade-in cursor-pointer"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          playClick();
+          onClose();
+        }
+      }}
+    >
+      <div 
+        id="scratchpad-modal-content" 
+        className="bg-white rounded-3xl p-5 w-full max-w-lg shadow-2xl border border-slate-200 overflow-hidden cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
           <div className="flex items-center gap-2">

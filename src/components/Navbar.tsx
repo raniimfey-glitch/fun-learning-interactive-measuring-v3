@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Sliders, PenTool, Star } from 'lucide-react';
+import { Volume2, VolumeX, PenTool, Star } from 'lucide-react';
 import { speechEngine } from '../utils/speechEngine';
 import { playClick } from '../utils/soundEffects';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -8,15 +8,15 @@ import { AlgeriaFlag, UkFlag } from '../i18n/flags';
 interface NavbarProps {
   stars: number;
   maxStars?: number;
-  onOpenSettings: () => void;
   onOpenScratch: () => void;
+  onGoHome?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   stars,
   maxStars = 3,
-  onOpenSettings,
   onOpenScratch,
+  onGoHome,
 }) => {
   const { language, setLanguage, t } = useLanguage();
   const [audioEnabled, setAudioEnabled] = useState(speechEngine.getSettings().enabled);
@@ -33,22 +33,32 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md text-slate-800 shadow-xs px-2.5 sm:px-6 py-2.5 sm:py-3 border-b border-slate-200 w-full">
       <div className="w-full max-w-5xl mx-auto flex items-center justify-between gap-2">
         {/* Brand with App Icon & Title */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <button
+          type="button"
+          onClick={() => {
+            if (onGoHome) {
+              playClick();
+              onGoHome();
+            }
+          }}
+          className="flex items-center gap-2 sm:gap-3 min-w-0 text-start bg-transparent border-0 p-0 cursor-pointer group"
+          title={t.appTitle}
+        >
           <img
             src="/src/assets/images/app_icon_1788024611307.jpg"
             alt={t.appIconAlt}
             referrerPolicy="no-referrer"
-            className="w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl shadow-xs border-2 border-sky-100 object-cover shrink-0"
+            className="w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl shadow-xs border-2 border-sky-100 object-cover shrink-0 group-hover:scale-105 transition-transform"
           />
           <div className="min-w-0">
             <div className="text-[10px] sm:text-xs font-black text-sky-600 leading-none mb-0.5">
               {t.brandTag}
             </div>
-            <h1 className="text-sm sm:text-lg md:text-xl font-black tracking-tight leading-tight text-slate-900 truncate">
+            <h1 className="text-sm sm:text-lg md:text-xl font-black tracking-tight leading-tight text-slate-900 truncate group-hover:text-sky-600 transition-colors">
               {t.appTitle}
             </h1>
           </div>
-        </div>
+        </button>
 
         {/* Action Controls & Language Selector */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -147,20 +157,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             {audioEnabled ? <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" />}
-          </button>
-
-          {/* Audio Settings Dialog */}
-          <button
-            id="navbar-settings-btn"
-            type="button"
-            onClick={() => {
-              playClick();
-              onOpenSettings();
-            }}
-            title={t.audioSettings}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all border border-slate-200 active:scale-95 shadow-xs"
-          >
-            <Sliders className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>

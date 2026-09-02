@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Scale, Info, Sparkles } from 'lucide-react';
+import { Volume2, Scale, Info } from 'lucide-react';
 import { getUnitsData } from '../data';
 import { VesselSVG } from './VesselSVG';
 import { speechEngine } from '../utils/speechEngine';
@@ -55,10 +55,6 @@ export const ExploreTab: React.FC = () => {
       {/* Introduction Card */}
       <div id="explore-intro-card" className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-sky-50 border border-sky-200 rounded-full text-sky-800 text-xs sm:text-sm font-black mb-2 shadow-xs">
-            <Sparkles size={16} className="text-sky-600" />
-            <span>{t.exploreBadge}</span>
-          </div>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900">{t.exploreTitle}</h2>
           <p className="text-sm sm:text-base text-slate-600 font-bold mt-1">
             {t.exploreSubtitle}

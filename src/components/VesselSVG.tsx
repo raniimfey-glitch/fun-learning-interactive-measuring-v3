@@ -25,8 +25,8 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
   ml,
   maxMl = 1000,
   goalMl,
-  width = 105,
-  height = 220,
+  width = 110,
+  height = 230,
   color = '#0284c7',
   lightColor = '#e0f2fe',
   showLabels = true,
@@ -39,10 +39,10 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
 }) => {
   const { language, t } = useLanguage();
 
-  const bw = width - 14;
-  const bh = height - 32;
-  const bx = 7;
-  const by = 26;
+  const bw = width - 16;
+  const bh = height - 36;
+  const bx = 8;
+  const by = 28;
   const neckW = bw * 0.45;
   const neckH = 20;
   const neckX = bx + (bw - neckW) / 2;
@@ -51,43 +51,28 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
   const waterH = Math.round(bh * pct);
   const waterY = by + bh - waterH;
 
-  const formatShort = (val: number) => {
-    if (language === 'en') {
-      if (val === 1000) return '1 L';
-      if (val === 750) return '¾ L';
-      if (val === 500) return '½ L';
-      if (val === 250) return '¼ L';
-      return val > 0 ? `${val} mL` : t.emptyVessel;
-    }
-    if (val === 1000) return '1 لتر';
-    if (val === 750) return '¾ لتر';
-    if (val === 500) return '½ لتر';
-    if (val === 250) return '¼ لتر';
-    return val > 0 ? `${val} مل` : t.emptyVessel;
-  };
-
-  const displayLabel = label || formatShort(ml);
+  const displayLabel = label !== undefined ? label : `${ml} ${t.mlUnit}`;
 
   const handleSpeak = (e: React.MouseEvent) => {
     e.stopPropagation();
     playClick();
-    const textToSpeak = vocalizedLabel || `${displayLabel}`;
+    const textToSpeak = vocalizedLabel || label || `${ml} ${t.mlUnit}`;
     speechEngine.speak(textToSpeak);
   };
 
-  // Marks at 1L, 3/4L, 1/2L, 1/4L
+  // Graduation marks
   const marks = language === 'en'
     ? [
-        { p: 1.0, text: '1 L' },
-        { p: 0.75, text: '¾ L' },
-        { p: 0.5, text: '½ L' },
-        { p: 0.25, text: '¼ L' },
+        { p: 1.0, label: '1 L' },
+        { p: 0.75, label: '¾ L' },
+        { p: 0.5, label: '½ L' },
+        { p: 0.25, label: '¼ L' },
       ]
     : [
-        { p: 1.0, text: '1 لتر' },
-        { p: 0.75, text: '¾ لتر' },
-        { p: 0.5, text: '½ لتر' },
-        { p: 0.25, text: '¼ لتر' },
+        { p: 1.0, label: '1 ل' },
+        { p: 0.75, label: '¾ ل' },
+        { p: 0.5, label: '½ ل' },
+        { p: 0.25, label: '¼ ل' },
       ];
 
   return (
@@ -106,34 +91,34 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
             {/* Glass gradient */}
             <linearGradient id={`glass-${color.replace('#','')}`} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
-              <stop offset="30%" stopColor={lightColor} stopOpacity="0.35" />
-              <stop offset="70%" stopColor={lightColor} stopOpacity="0.45" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.65" />
+              <stop offset="25%" stopColor={lightColor} stopOpacity="0.3" />
+              <stop offset="75%" stopColor={lightColor} stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.7" />
             </linearGradient>
 
             {/* Liquid gradient */}
             <linearGradient id={`water-${color.replace('#','')}`} x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={color} stopOpacity="0.92" />
-              <stop offset="50%" stopColor={color} stopOpacity="0.82" />
-              <stop offset="100%" stopColor={color} stopOpacity="0.95" />
+              <stop offset="0%" stopColor={color} stopOpacity="0.95" />
+              <stop offset="50%" stopColor={color} stopOpacity="0.85" />
+              <stop offset="100%" stopColor={color} stopOpacity="0.98" />
             </linearGradient>
 
-            {/* Shimmer clip */}
+            {/* Vessel clip boundary */}
             <clipPath id={`vessel-clip-${width}-${height}`}>
-              <rect x={bx} y={by} width={bw} height={bh} rx="14" />
+              <rect x={bx} y={by} width={bw} height={bh} rx="12" />
             </clipPath>
           </defs>
 
           {/* Bottle Neck & Cap */}
           <rect
             x={neckX}
-            y={5}
+            y={6}
             width={neckW}
             height={neckH}
-            rx={5}
+            rx={4}
             fill="#e2e8f0"
             stroke={color}
-            strokeWidth="2.5"
+            strokeWidth="2"
           />
           <rect
             x={neckX - 2}
@@ -150,13 +135,13 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
             y={by}
             width={bw}
             height={bh}
-            rx={14}
+            rx={12}
             fill={`url(#glass-${color.replace('#','')})`}
             stroke={color}
-            strokeWidth="3"
+            strokeWidth="2.5"
           />
 
-          {/* Water fill with animation */}
+          {/* Water fill */}
           {pct > 0 && (
             <g clipPath={`url(#vessel-clip-${width}-${height})`}>
               <rect
@@ -172,28 +157,28 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
                 cx={bx + bw / 2}
                 cy={waterY}
                 rx={bw / 2 - 1}
-                ry={4}
+                ry={3}
                 fill="#ffffff"
                 opacity="0.6"
               />
-              {/* Bubble particle */}
-              {pct > 0.25 && (
+              {/* Floating bubbles */}
+              {pct > 0.2 && (
                 <circle
-                  cx={bx + bw * 0.35}
+                  cx={bx + bw * 0.3}
                   cy={waterY + waterH * 0.5}
-                  r="3"
+                  r="2.5"
                   fill="#ffffff"
-                  opacity="0.8"
+                  opacity="0.7"
                 >
                   <animate
                     attributeName="cy"
-                    values={`${waterY + waterH * 0.8};${waterY + 4}`}
+                    values={`${waterY + waterH * 0.8};${waterY + 2}`}
                     dur="1.8s"
                     repeatCount="indefinite"
                   />
                   <animate
                     attributeName="opacity"
-                    values="0.8;0"
+                    values="0.7;0"
                     dur="1.8s"
                     repeatCount="indefinite"
                   />
@@ -202,39 +187,73 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
             </g>
           )}
 
-          {/* Measurement graduation marks */}
+          {/* Graduation lines & labels */}
           {showMarks &&
             marks.map((m, idx) => {
               const my = by + bh - bh * m.p;
+              const isFilled = pct >= m.p - 0.01;
+
               return (
-                <g key={idx} opacity="0.95">
+                <g key={idx} className="transition-opacity duration-200">
+                  {/* Left tick */}
                   <line
-                    x1={bx + 3}
+                    x1={bx}
                     y1={my}
-                    x2={bx + bw * 0.42}
+                    x2={bx + 12}
                     y2={my}
-                    stroke="#1e293b"
-                    strokeWidth="2"
-                    strokeDasharray="3,2"
+                    stroke={isFilled ? '#ffffff' : color}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                  {/* Right tick */}
+                  <line
+                    x1={bx + bw - 12}
+                    y1={my}
+                    x2={bx + bw}
+                    y2={my}
+                    stroke={isFilled ? '#ffffff' : color}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                  {/* Dashed guide */}
+                  <line
+                    x1={bx + 14}
+                    y1={my}
+                    x2={bx + bw - 14}
+                    y2={my}
+                    stroke={isFilled ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.18)'}
+                    strokeWidth="1"
+                    strokeDasharray="2,2"
+                  />
+                  {/* Mark text badge */}
+                  <rect
+                    x={bx + (bw - 30) / 2}
+                    y={my - 7}
+                    width={30}
+                    height={14}
+                    rx="3"
+                    fill={isFilled ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.85)'}
                   />
                   <text
-                    x={bx + bw * 0.46}
-                    y={my + 4.5}
-                    fontSize={width > 80 ? '12' : '10'}
-                    fontWeight="900"
-                    fill="#0f172a"
+                    x={bx + bw / 2}
+                    y={my + 3.5}
+                    textAnchor="middle"
+                    fill={isFilled ? color : '#0f172a'}
+                    fontSize="9.5"
+                    fontWeight="800"
+                    className="select-none pointer-events-none"
                   >
-                    {m.text}
+                    {m.label}
                   </text>
                 </g>
               );
             })}
 
-          {/* Glass reflection highlight overlay */}
+          {/* Glass reflection */}
           <path
-            d={`M ${bx + 5} ${by + 8} L ${bx + 5} ${by + bh - 10}`}
+            d={`M ${bx + 4} ${by + 6} L ${bx + 4} ${by + bh - 8}`}
             stroke="#ffffff"
-            strokeWidth="3.5"
+            strokeWidth="3"
             strokeLinecap="round"
             opacity="0.7"
           />
@@ -245,10 +264,10 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
             y={by}
             width={bw}
             height={bh}
-            rx={14}
+            rx={12}
             fill="none"
             stroke={color}
-            strokeWidth="3"
+            strokeWidth="2.5"
           />
 
           {/* Goal Marker Indicator if specified */}
@@ -266,31 +285,16 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
               <circle
                 cx={bx - 1}
                 cy={by + bh - bh * (goalMl / maxMl)}
-                r="3.5"
+                r="3"
                 fill="#ea580c"
               />
               <circle
                 cx={bx + bw + 1}
                 cy={by + bh - bh * (goalMl / maxMl)}
-                r="3.5"
+                r="3"
                 fill="#ea580c"
               />
             </g>
-          )}
-
-          {/* Inner label on liquid */}
-          {showLabels && pct > 0.08 && (
-            <text
-              x={bx + bw / 2}
-              y={waterY + Math.min(waterH / 2 + 5, waterH - 7)}
-              textAnchor="middle"
-              fontSize={width > 80 ? '14' : '11'}
-              fontWeight="900"
-              fill="#ffffff"
-              className="drop-shadow-md"
-            >
-              {displayLabel}
-            </text>
           )}
         </svg>
 
@@ -299,18 +303,19 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
           type="button"
           onClick={handleSpeak}
           title={t.listenVessel}
-          className="absolute -top-1.5 -right-1.5 w-8 h-8 rounded-full bg-white shadow-md border-2 border-slate-200 flex items-center justify-center text-sky-600 hover:bg-sky-50 hover:scale-110 active:scale-95 transition-transform"
+          className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-sky-600 hover:bg-sky-50 hover:scale-110 active:scale-95 transition-transform"
         >
-          <Volume2 size={15} />
+          <Volume2 size={13} />
         </button>
       </div>
 
-      {label && (
+      {/* Label under the vessel */}
+      {showLabels && (
         <span 
-          className="mt-2 text-sm sm:text-base font-black text-slate-800 text-center px-1"
+          className="mt-2 text-xs sm:text-sm font-black text-slate-800 text-center"
           style={{ color }}
         >
-          {label}
+          {displayLabel}
         </span>
       )}
     </div>

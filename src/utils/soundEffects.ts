@@ -1,19 +1,27 @@
 /**
  * Web Audio API Procedural Sound Effects Engine
  * Generates organic water pouring, drops, bubbles, chimes, fanfares, and feedback cues.
+ * Completely safe and resilient with zero unhandled exceptions.
  */
 
 let audioCtx: AudioContext | null = null;
 
-function getAudioContext(): AudioContext {
-  if (!audioCtx) {
+function getAudioContext(): AudioContext | null {
+  try {
+    if (typeof window === 'undefined') return null;
     const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    audioCtx = new AudioContextClass();
+    if (!AudioContextClass) return null;
+
+    if (!audioCtx) {
+      audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  } catch (e) {
+    return null;
   }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  return audioCtx;
 }
 
 /**
@@ -22,11 +30,14 @@ function getAudioContext(): AudioContext {
 export function playPourSound(fillProgress = 0.5) {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const duration = 0.35;
     const now = ctx.currentTime;
 
     // 1. Generate Noise Buffer (Water turbulence)
-    const bufferSize = ctx.sampleRate * duration;
+    const bufferSize = Math.floor(ctx.sampleRate * duration);
+    if (bufferSize <= 0) return;
     const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
     let b0 = 0, b1 = 0, b2 = 0;
@@ -65,7 +76,7 @@ export function playPourSound(fillProgress = 0.5) {
     // 4. Add subtle liquid bubbles
     playBubblePop(baseFreq * 1.5, 0.05);
   } catch (e) {
-    console.warn('Audio FX error:', e);
+    // Silently ignore audio errors to prevent UI blockage
   }
 }
 
@@ -75,6 +86,8 @@ export function playPourSound(fillProgress = 0.5) {
 export function playWaterDrop(freq = 600) {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -101,6 +114,8 @@ export function playWaterDrop(freq = 600) {
 export function playBubblePop(freq = 700, delay = 0) {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const now = ctx.currentTime + delay;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -127,26 +142,30 @@ export function playBubblePop(freq = 700, delay = 0) {
 export function playSuccess() {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
     const now = ctx.currentTime;
 
     notes.forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
-      osc.type = 'sine';
-      osc.frequency.value = freq;
+        osc.type = 'sine';
+        osc.frequency.value = freq;
 
-      const t = now + idx * 0.09;
-      gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.16, t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+        const t = now + idx * 0.09;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.16, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
 
-      osc.start(t);
-      osc.stop(t + 0.42);
+        osc.start(t);
+        osc.stop(t + 0.42);
+      } catch (err) {}
     });
   } catch (e) {}
 }
@@ -157,6 +176,8 @@ export function playSuccess() {
 export function playError() {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -182,24 +203,28 @@ export function playError() {
 export function playStarEarned() {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const now = ctx.currentTime;
     const freqs = [880, 1174.66, 1760]; // A5, D6, A6
 
     freqs.forEach((f, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = f;
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = f;
 
-      const t = now + i * 0.08;
-      gain.gain.setValueAtTime(0.18, t);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+        const t = now + i * 0.08;
+        gain.gain.setValueAtTime(0.18, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
 
-      osc.start(t);
-      osc.stop(t + 0.48);
+        osc.start(t);
+        osc.stop(t + 0.48);
+      } catch (err) {}
     });
   } catch (e) {}
 }
@@ -210,6 +235,8 @@ export function playStarEarned() {
 export function playFanfare() {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const melody = [
       { f: 523.25, d: 0.12, t: 0 },
       { f: 523.25, d: 0.12, t: 0.13 },
@@ -221,20 +248,22 @@ export function playFanfare() {
     const now = ctx.currentTime;
 
     melody.forEach(note => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.value = note.f;
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = note.f;
 
-      const st = now + note.t;
-      gain.gain.setValueAtTime(0.18, st);
-      gain.gain.exponentialRampToValueAtTime(0.0001, st + note.d);
+        const st = now + note.t;
+        gain.gain.setValueAtTime(0.18, st);
+        gain.gain.exponentialRampToValueAtTime(0.0001, st + note.d);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
 
-      osc.start(st);
-      osc.stop(st + note.d + 0.05);
+        osc.start(st);
+        osc.stop(st + note.d + 0.05);
+      } catch (err) {}
     });
   } catch (e) {}
 }
@@ -245,6 +274,8 @@ export function playFanfare() {
 export function playClick() {
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
+
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();

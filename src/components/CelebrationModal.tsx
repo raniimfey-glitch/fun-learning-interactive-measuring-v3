@@ -52,8 +52,20 @@ export const CelebrationModal: React.FC<CelebrationModalProps> = ({
   const pct = score / total;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
-      <div id="celebration-modal-content" className="bg-white rounded-3xl p-8 sm:p-10 w-full max-w-md text-center shadow-2xl border border-slate-200 relative overflow-hidden animate-pop-in">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in cursor-pointer"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          playClick();
+          onClose();
+        }
+      }}
+    >
+      <div 
+        id="celebration-modal-content" 
+        className="bg-white rounded-3xl p-8 sm:p-10 w-full max-w-md text-center shadow-2xl border border-slate-200 relative overflow-hidden animate-pop-in cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Top color bar */}
         <div className="absolute top-0 right-0 left-0 h-2 bg-gradient-to-r from-sky-500 via-cyan-400 to-teal-500" />
 

@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
+import { HomePortal } from './components/HomePortal';
 import { ExploreTab } from './components/ExploreTab';
 import { PourTab } from './components/PourTab';
 import { ExerciseTab } from './components/ExerciseTab';
 import { ComplementTab } from './components/ComplementTab';
-import { AudioSettingsModal } from './components/AudioSettingsModal';
 import { ScratchpadModal } from './components/ScratchpadModal';
 import { CelebrationModal } from './components/CelebrationModal';
 import { SpeechBanner } from './components/SpeechBanner';
 import { speechEngine } from './utils/speechEngine';
 import { playClick, playStarEarned } from './utils/soundEffects';
-import { PenTool } from 'lucide-react';
+import { PenTool, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLanguage } from './i18n/LanguageContext';
 
 export default function App() {
   const { language, t, isRTL } = useLanguage();
-  const [activeTab, setActiveTab] = useState<number>(1);
+  // selectedActivity: null means on Screen 1 (Home Portal), number 1..4 means on Screen 2 (Active Activity)
+  const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
   const [stars, setStars] = useState<number>(0);
-  const [isAudioSettingsOpen, setIsAudioSettingsOpen] = useState<boolean>(false);
   const [isScratchpadOpen, setIsScratchpadOpen] = useState<boolean>(false);
   const [isCelebrationOpen, setIsCelebrationOpen] = useState<boolean>(false);
   const [celebrationScore, setCelebrationScore] = useState<{ score: number; total: number }>({
@@ -25,10 +25,20 @@ export default function App() {
     total: 0,
   });
 
-  const handleTabChange = (tabId: number) => {
+  const BackArrowIcon = isRTL ? ArrowRight : ArrowLeft;
+
+  const handleSelectActivity = (id: number) => {
     playClick();
     speechEngine.stop();
-    setActiveTab(tabId);
+    setSelectedActivity(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToHome = () => {
+    playClick();
+    speechEngine.stop();
+    setSelectedActivity(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const addStar = () => {
@@ -51,12 +61,12 @@ export default function App() {
     }
   };
 
-  const tabs = [
-    { id: 1, title: t.exploreTab, subtitle: t.exploreTabSub, color: 'from-sky-500 to-cyan-500' },
-    { id: 2, title: t.pourTab, subtitle: t.pourTabSub, color: 'from-cyan-500 to-teal-500' },
-    { id: 3, title: t.exerciseTab, subtitle: t.exerciseTabSub, color: 'from-blue-600 to-indigo-600' },
-    { id: 4, title: t.complementTab, subtitle: t.complementTabSub, color: 'from-orange-500 to-amber-500' },
-  ];
+  const activityTitles: Record<number, string> = {
+    1: t.exploreTab,
+    2: t.pourTab,
+    3: t.exerciseTab,
+    4: t.complementTab,
+  };
 
   return (
     <div className={`min-h-screen flex flex-col bg-slate-50 text-slate-800 selection:bg-sky-500/20 ${language === 'en' ? "font-['Nunito',sans-serif]" : "font-['Tajawal',sans-serif]"}`}>
@@ -64,54 +74,62 @@ export default function App() {
       <Navbar
         stars={stars}
         maxStars={3}
-        onOpenSettings={() => setIsAudioSettingsOpen(true)}
         onOpenScratch={() => setIsScratchpadOpen(true)}
+        onGoHome={handleBackToHome}
       />
 
       {/* Main Container */}
       <main className="flex-1 w-full max-w-5xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-6 space-y-4 sm:space-y-6 pb-28 sm:pb-24">
-        {/* Navigation Tabs */}
-        <div id="main-nav-tabs" className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 bg-white p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-md shadow-slate-100">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
+        {/* SCREEN 1: Main Home Activity Portal */}
+        {selectedActivity === null ? (
+          <HomePortal onSelectActivity={handleSelectActivity} />
+        ) : (
+          /* SCREEN 2: Selected Activity with a SINGLE clean Back Button */
+          <div className="space-y-4 animate-fade-in">
+            {/* Dedicated Single Back Navigation Bar */}
+            <div 
+              id="activity-back-bar"
+              className="bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 border border-slate-200 shadow-sm flex items-center justify-between gap-3"
+            >
               <button
-                key={tab.id}
-                id={`tab-btn-${tab.id}`}
+                id="back-to-home-btn"
                 type="button"
-                onClick={() => handleTabChange(tab.id)}
-                className={`py-3 sm:py-4 px-2 sm:px-3 rounded-xl sm:rounded-2xl text-center transition-all duration-200 font-black flex flex-col items-center justify-center min-h-[62px] sm:min-h-[74px] active:scale-95 ${
-                  isActive
-                    ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-sky-500/25 scale-[1.02] border border-white/30`
-                    : 'bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200/70'
-                }`}
+                onClick={handleBackToHome}
+                className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-sky-700 font-black text-xs sm:text-sm transition-all border border-slate-200 hover:border-sky-300 active:scale-95 shadow-xs cursor-pointer"
               >
-                <span className="text-base sm:text-lg tracking-tight">{tab.title}</span>
-                <span className={`text-[11px] sm:text-xs font-bold mt-0.5 ${isActive ? 'text-white/95' : 'text-slate-500'}`}>
-                  {tab.subtitle}
-                </span>
+                <BackArrowIcon className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600" />
+                <span>{t.backToHome}</span>
               </button>
-            );
-          })}
-        </div>
 
-        {/* Tab Content Panels */}
-        <div className="transition-all duration-300">
-          {activeTab === 1 && <ExploreTab />}
-          {activeTab === 2 && <PourTab onScoreEarned={addStar} />}
-          {activeTab === 3 && (
-            <ExerciseTab
-              onFinish={handleFinishQuiz}
-              onCorrectAnswer={addStar}
-            />
-          )}
-          {activeTab === 4 && (
-            <ComplementTab
-              onScoreEarned={addStar}
-              onOpenScratch={() => setIsScratchpadOpen(true)}
-            />
-          )}
-        </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-400 hidden sm:inline">
+                  {t.currentActivity}
+                </span>
+                <span className="text-xs sm:text-sm font-black text-slate-800 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200">
+                  {activityTitles[selectedActivity]}
+                </span>
+              </div>
+            </div>
+
+            {/* Selected Activity Content Panel */}
+            <div className="transition-all duration-300">
+              {selectedActivity === 1 && <ExploreTab />}
+              {selectedActivity === 2 && <PourTab onScoreEarned={addStar} />}
+              {selectedActivity === 3 && (
+                <ExerciseTab
+                  onFinish={handleFinishQuiz}
+                  onCorrectAnswer={addStar}
+                />
+              )}
+              {selectedActivity === 4 && (
+                <ComplementTab
+                  onScoreEarned={addStar}
+                  onOpenScratch={() => setIsScratchpadOpen(true)}
+                />
+              )}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Floating Scratchpad Quick Action Button */}
@@ -123,7 +141,7 @@ export default function App() {
           setIsScratchpadOpen(true);
         }}
         title={t.scratchpadTab}
-        className={`fixed bottom-5 sm:bottom-6 z-30 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-xl shadow-sky-600/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform border-2 border-white ${
+        className={`fixed bottom-5 sm:bottom-6 z-30 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-xl shadow-sky-600/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform border-2 border-white cursor-pointer ${
           isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'
         }`}
       >
@@ -134,11 +152,6 @@ export default function App() {
       <SpeechBanner />
 
       {/* Modals */}
-      <AudioSettingsModal
-        isOpen={isAudioSettingsOpen}
-        onClose={() => setIsAudioSettingsOpen(false)}
-      />
-
       <ScratchpadModal
         isOpen={isScratchpadOpen}
         onClose={() => setIsScratchpadOpen(false)}
@@ -150,10 +163,11 @@ export default function App() {
         total={celebrationScore.total}
         onRetry={() => {
           setIsCelebrationOpen(false);
-          setActiveTab(3);
+          setSelectedActivity(3);
         }}
         onClose={() => setIsCelebrationOpen(false)}
       />
     </div>
   );
 }
+
