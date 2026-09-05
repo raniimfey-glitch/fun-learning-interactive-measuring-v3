@@ -10,14 +10,15 @@ import {
   ArrowLeft, 
   Sparkles, 
   CheckCircle2,
-  Volume2
+  Smartphone
 } from 'lucide-react';
 
 interface HomePortalProps {
   onSelectActivity: (id: number) => void;
+  onOpenSplash?: () => void;
 }
 
-export const HomePortal: React.FC<HomePortalProps> = ({ onSelectActivity }) => {
+export const HomePortal: React.FC<HomePortalProps> = ({ onSelectActivity, onOpenSplash }) => {
   const { language, t, isRTL } = useLanguage();
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
@@ -109,6 +110,23 @@ export const HomePortal: React.FC<HomePortalProps> = ({ onSelectActivity }) => {
             <p className="text-sm sm:text-base font-semibold text-slate-600 leading-relaxed">
               {t.homeSubtitle}
             </p>
+
+            {onOpenSplash && (
+              <div className="pt-1">
+                <button
+                  type="button"
+                  id="open-splash-btn"
+                  onClick={() => {
+                    playClick();
+                    onOpenSplash();
+                  }}
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-black transition-all active:scale-95 shadow-2xs cursor-pointer"
+                >
+                  <Smartphone className="w-3.5 h-3.5 text-sky-600" />
+                  <span>{language === 'ar' ? '✨ شاشة الترحيب (Splash Screen)' : '✨ Welcome Screen'}</span>
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="hidden md:flex flex-col items-center justify-center p-3 bg-slate-50 rounded-2xl border border-slate-200 shrink-0">
