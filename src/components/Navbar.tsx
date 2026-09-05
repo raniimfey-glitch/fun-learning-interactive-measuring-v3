@@ -1,34 +1,20 @@
-import React, { useState } from 'react';
-import { Volume2, VolumeX, PenTool, Star } from 'lucide-react';
-import { speechEngine } from '../utils/speechEngine';
+import React from 'react';
 import { playClick } from '../utils/soundEffects';
 import { useLanguage } from '../i18n/LanguageContext';
 import { AlgeriaFlag, UkFlag } from '../i18n/flags';
 import appIconSrc from '../assets/images/app_icon_1788024611307.jpg';
 
 interface NavbarProps {
-  stars: number;
+  stars?: number;
   maxStars?: number;
-  onOpenScratch: () => void;
+  onOpenScratch?: () => void;
   onGoHome?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  stars,
-  maxStars = 3,
-  onOpenScratch,
   onGoHome,
 }) => {
   const { language, setLanguage, t } = useLanguage();
-  const [audioEnabled, setAudioEnabled] = useState(speechEngine.getSettings().enabled);
-
-  const toggleMute = () => {
-    playClick();
-    const current = speechEngine.getSettings();
-    const updated = !current.enabled;
-    speechEngine.updateSettings({ enabled: updated });
-    setAudioEnabled(updated);
-  };
 
   return (
     <header className="shrink-0 z-30 bg-white/95 backdrop-blur-md text-slate-800 shadow-xs px-2.5 sm:px-4 py-1.5 sm:py-2 border-b border-slate-200 w-full">
@@ -67,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </button>
 
-        {/* Action Controls & Language Selector */}
+        {/* Action Controls: Language Switcher */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Language Switcher Segmented Control */}
           <div
@@ -86,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }
               }}
               title="العربية (الجزائر)"
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 language === 'ar'
                   ? 'bg-white text-slate-900 shadow-xs font-black'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -106,7 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }
               }}
               title="English (UK)"
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 language === 'en'
                   ? 'bg-white text-slate-900 shadow-xs font-black'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -116,55 +102,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="hidden xs:inline text-xs">English</span>
             </button>
           </div>
-
-          {/* Stars display */}
-          <div
-            id="stars-meter"
-            className="flex items-center gap-0.5 sm:gap-1 bg-amber-50/90 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-amber-200 shadow-xs"
-          >
-            {Array.from({ length: maxStars }).map((_, idx) => {
-              const earned = idx < stars;
-              return (
-                <Star
-                  key={idx}
-                  className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300 ${
-                    earned
-                      ? 'text-amber-400 fill-amber-400 scale-110 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]'
-                      : 'text-slate-300'
-                  }`}
-                />
-              );
-            })}
-          </div>
-
-          {/* Scratchpad Button */}
-          <button
-            id="navbar-scratchpad-btn"
-            type="button"
-            onClick={() => {
-              playClick();
-              onOpenScratch();
-            }}
-            title={t.openScratchpad}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all border border-slate-200 active:scale-95 shadow-xs"
-          >
-            <PenTool className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
-
-          {/* Quick Mute/Unmute */}
-          <button
-            id="navbar-mute-btn"
-            type="button"
-            onClick={toggleMute}
-            title={audioEnabled ? t.muteAudio : t.unmuteAudio}
-            className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all border active:scale-95 shadow-xs ${
-              audioEnabled
-                ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-                : 'bg-rose-50 text-rose-600 border-rose-200'
-            }`}
-          >
-            {audioEnabled ? <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" />}
-          </button>
         </div>
       </div>
     </header>

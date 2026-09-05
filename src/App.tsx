@@ -9,7 +9,6 @@ import { ComplementTab } from './components/ComplementTab';
 import { ScratchpadModal } from './components/ScratchpadModal';
 import { CelebrationModal } from './components/CelebrationModal';
 import { SplashScreenModal } from './components/SplashScreenModal';
-import { SpeechBanner } from './components/SpeechBanner';
 import { speechEngine } from './utils/speechEngine';
 import { playClick, playStarEarned } from './utils/soundEffects';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -76,12 +75,7 @@ export default function App() {
   return (
     <div className={`h-[100dvh] max-h-[100dvh] w-full flex flex-col justify-between overflow-hidden bg-slate-50 text-slate-800 selection:bg-sky-500/20 ${language === 'en' ? "font-['Nunito',sans-serif]" : "font-['Tajawal',sans-serif]"}`}>
       {/* Top Navbar */}
-      <Navbar
-        stars={stars}
-        maxStars={3}
-        onOpenScratch={() => setIsScratchpadOpen(true)}
-        onGoHome={handleBackToHome}
-      />
+      <Navbar onGoHome={handleBackToHome} />
 
       {/* Main Container strictly bounded within viewport */}
       <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto px-2 sm:px-4 py-1.5 sm:py-2 flex flex-col justify-between overflow-hidden">
@@ -146,9 +140,6 @@ export default function App() {
         }}
         onOpenScratch={() => setIsScratchpadOpen(true)}
       />
-
-      {/* Live Speaking Visualizer Waveform Banner */}
-      <SpeechBanner />
 
       {/* Modals */}
       <ScratchpadModal
