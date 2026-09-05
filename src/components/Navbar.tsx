@@ -4,6 +4,7 @@ import { speechEngine } from '../utils/speechEngine';
 import { playClick } from '../utils/soundEffects';
 import { useLanguage } from '../i18n/LanguageContext';
 import { AlgeriaFlag, UkFlag } from '../i18n/flags';
+import appIconSrc from '../assets/images/app_icon_1788024611307.jpg';
 
 interface NavbarProps {
   stars: number;
@@ -44,12 +45,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-2 sm:gap-3 min-w-0 text-start bg-transparent border-0 p-0 cursor-pointer group"
           title={t.appTitle}
         >
-          <img
-            src="/src/assets/images/app_icon_1788024611307.jpg"
-            alt={t.appIconAlt}
-            referrerPolicy="no-referrer"
-            className="w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl shadow-xs border-2 border-sky-100 object-cover shrink-0 group-hover:scale-105 transition-transform"
-          />
+          <div className="relative shrink-0 group">
+            <div className="absolute -inset-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-sky-400 to-cyan-400 opacity-75 blur-xs animate-pulse" />
+            <img
+              src={appIconSrc}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/app-icon.jpg';
+              }}
+              alt={t.appIconAlt}
+              referrerPolicy="no-referrer"
+              className="relative w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl shadow-xs border-2 border-white object-cover group-hover:scale-105 transition-transform animate-pulse"
+            />
+          </div>
           <div className="min-w-0">
             <div className="text-[10px] sm:text-xs font-black text-sky-600 leading-none mb-0.5">
               {t.brandTag}

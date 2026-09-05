@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { playClick } from '../utils/soundEffects';
-import { Sparkles, X, ArrowRight, ArrowLeft, Smartphone, Eye } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import appIconSrc from '../assets/images/app_icon_1788024611307.jpg';
 
 interface SplashScreenModalProps {
   isOpen: boolean;
@@ -14,9 +15,7 @@ export const SplashScreenModal: React.FC<SplashScreenModalProps> = ({
   onClose,
   onStartApp,
 }) => {
-  const { language, isRTL } = useLanguage();
-  const [viewMode, setViewMode] = useState<'live' | 'mockup'>('live');
-  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
+  const { language } = useLanguage();
 
   if (!isOpen) return null;
 
@@ -31,169 +30,86 @@ export const SplashScreenModal: React.FC<SplashScreenModalProps> = ({
 
   return (
     <div 
-      id="splash-screen-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in overflow-y-auto"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          playClick();
-          onClose();
-        }
-      }}
+      id="splash-screen-fullscreen"
+      onClick={handleStart}
+      className="fixed inset-0 z-50 w-screen h-screen min-h-screen bg-gradient-to-b from-sky-950 via-sky-900 to-slate-950 text-white flex flex-col justify-between p-6 sm:p-10 md:p-14 overflow-hidden select-none animate-fade-in cursor-pointer"
     >
-      <div 
-        id="splash-screen-dialog"
-        className="relative w-full max-w-sm sm:max-w-md my-auto flex flex-col items-center select-none"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Top Control Bar */}
-        <div className="w-full flex items-center justify-between mb-3 px-1 text-white/90">
-          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md p-1 rounded-2xl border border-white/15">
-            <button
-              type="button"
-              onClick={() => {
-                playClick();
-                setViewMode('live');
-              }}
-              className={`px-3 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                viewMode === 'live' 
-                  ? 'bg-sky-500 text-white shadow-sm' 
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              {language === 'ar' ? 'واجهة تفاعلية' : 'Interactive UI'}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                playClick();
-                setViewMode('mockup');
-              }}
-              className={`px-3 py-1 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
-                viewMode === 'mockup' 
-                  ? 'bg-sky-500 text-white shadow-sm' 
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>{language === 'ar' ? 'تصميم 9:16' : '9:16 Mockup'}</span>
-            </button>
-          </div>
+      {/* Dynamic Glowing Radial Light Flare Centered behind the App Icon */}
+      <div className="absolute top-[32%] sm:top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-sky-400/25 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute top-[32%] sm:top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 h-48 sm:h-64 bg-cyan-300/35 rounded-full blur-2xl pointer-events-none" />
 
-          <button
-            type="button"
-            id="close-splash-btn"
-            onClick={() => {
-              playClick();
-              onClose();
-            }}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all border border-white/15 cursor-pointer active:scale-95"
-            title={language === 'ar' ? 'إغلاق' : 'Close'}
-          >
-            <X className="w-4 h-4" />
-          </button>
+      {/* Decorative ambient background accents */}
+      <div className="absolute -top-20 -right-20 w-72 h-72 bg-teal-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Top Bar with Dismiss / Direct Enter */}
+      <div className="relative z-10 w-full flex items-center justify-between text-white/80 max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 text-xs sm:text-sm font-bold bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/15">
+          <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+          <span>{language === 'ar' ? 'أهلاً بك في التطبيق التعليمي' : 'Welcome to the Learning App'}</span>
         </div>
 
-        {/* 9:16 Aspect Ratio Frame */}
-        <div 
-          id="splash-screen-frame"
-          className="w-full aspect-[9/16] max-h-[82vh] rounded-[32px] sm:rounded-[36px] overflow-hidden shadow-2xl border-4 border-white/20 relative flex flex-col justify-between"
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleStart();
+          }}
+          className="text-xs sm:text-sm font-black px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer active:scale-95"
         >
-          {viewMode === 'mockup' ? (
-            /* High-Res Rendered 9:16 Splash Screen Image */
-            <div className="relative w-full h-full bg-slate-950 flex flex-col">
-              <img
-                src="/src/assets/images/splash_screen_ui_1788445467030.jpg"
-                alt="Mobile UI Splash Screen 9:16 Mockup"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
-              />
-              {/* Floating Start Overlay */}
-              <div className="absolute bottom-4 left-4 right-4 z-20">
-                <button
-                  type="button"
-                  onClick={handleStart}
-                  className="w-full py-3 px-4 rounded-2xl bg-white/90 hover:bg-white text-slate-900 font-black text-sm shadow-xl backdrop-blur-md flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer"
-                >
-                  <span>{language === 'ar' ? 'دخول التطبيق' : 'Enter Application'}</span>
-                  <ArrowIcon className="w-4 h-4 text-sky-600" />
-                </button>
-              </div>
-            </div>
-          ) : (
-            /* Adaptive Background: Dynamic gradient with glowing radial light effect */
-            <div className="relative w-full h-full bg-gradient-to-b from-sky-950 via-sky-900 to-slate-950 text-white flex flex-col justify-between p-6 sm:p-7 overflow-hidden">
-              {/* Radial glow centered behind icon */}
-              <div className="absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-80 sm:h-80 bg-sky-400/25 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute top-[32%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-cyan-300/35 rounded-full blur-xl pointer-events-none" />
+          {language === 'ar' ? 'تخطي ✕' : 'Skip ✕'}
+        </button>
+      </div>
 
-              {/* Decorative subtle ambient lights */}
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-teal-500/20 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-16 -left-16 w-52 h-52 bg-indigo-600/25 rounded-full blur-2xl pointer-events-none" />
+      {/* Main Centered Content: Upper-Middle App Icon, Typography & Requested Brand Badge */}
+      <div className="relative z-10 flex flex-col items-center text-center my-auto max-w-xl mx-auto px-4">
+        {/* App Icon: Centered in upper-middle area with 20px rounded corners & ambient pulsing glow */}
+        <div className="relative group mb-6 sm:mb-8">
+          <div className="absolute -inset-2.5 sm:-inset-3.5 bg-gradient-to-r from-sky-400 via-cyan-300 to-teal-400 rounded-[28px] blur-lg opacity-80 animate-pulse" />
+          <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-[20px] bg-slate-900 p-1.5 border-2 border-white/50 shadow-2xl overflow-hidden flex items-center justify-center">
+            <img
+              src={appIconSrc}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/app-icon.jpg';
+              }}
+              alt="App Icon"
+              className="w-full h-full object-cover rounded-[16px] animate-pulse"
+            />
+          </div>
+        </div>
 
-              {/* Top empty balance space for mobile status bar */}
-              <div className="w-full flex justify-end items-center opacity-60 text-[11px] font-mono tracking-widest pt-1">
-                <span>9:41</span>
-              </div>
+        {/* Centered Typography */}
+        <div className="space-y-2 sm:space-y-3">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-lg">
+            {language === 'ar' ? 'قِيَاسُ السَّعَاتِ' : 'Capacity Explorer'}
+          </h1>
+          <p className="text-base sm:text-xl font-bold text-sky-200 drop-shadow-sm leading-relaxed max-w-md mx-auto">
+            {language === 'ar' ? 'اللِّتْرُ وَنِصْفُهُ وَرُبْعُهُ | رِحْلَةٌ مُمْتِعَةٌ' : 'Liter, Half & Quarter Liter | A Fun Journey'}
+          </p>
+        </div>
 
-              {/* Centered Upper-Middle App Icon & Content */}
-              <div className="relative z-10 flex flex-col items-center text-center my-auto">
-                {/* App Icon with 20px rounded square and glowing ambient shadow */}
-                <div className="relative group mb-5">
-                  <div className="absolute -inset-2 bg-gradient-to-r from-sky-400 to-cyan-300 rounded-[24px] blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-[20px] bg-slate-900 p-1 border-2 border-white/30 shadow-2xl overflow-hidden flex items-center justify-center">
-                    <img
-                      src="/src/assets/images/app_icon_1788024611307.jpg"
-                      alt="App Icon"
-                      className="w-full h-full object-cover rounded-[18px]"
-                    />
-                  </div>
-                </div>
+        {/* Brand Badge in place of the Start Exploring button */}
+        <div className="mt-8 sm:mt-10">
+          <div
+            id="splash-brand-badge"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/25 text-white text-sm sm:text-base md:text-lg font-black shadow-lg shadow-cyan-500/15 transition-all group"
+          >
+            <span className="tracking-wide">✨️ التعلم الممتع - fun learning ✨️</span>
+          </div>
+        </div>
+      </div>
 
-                {/* Typography & Layout */}
-                <div className="space-y-1.5 max-w-xs">
-                  <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-md">
-                    {language === 'ar' ? 'قِيَاسُ السَّعَاتِ' : 'Capacity Explorer'}
-                  </h1>
-                  <p className="text-xs sm:text-sm font-bold text-sky-200/90 leading-relaxed">
-                    {language === 'ar' ? 'اللِّتْرُ وَنِصْفُهُ وَرُبْعُهُ | رِحْلَةٌ مُمْتِعَةٌ' : 'Liter, Half & Quarter Liter | Fun Math Journey'}
-                  </p>
-                </div>
+      {/* Bottom Section: Navigation Indicators & Tap prompt */}
+      <div className="relative z-10 flex flex-col items-center gap-3 pb-2 max-w-md mx-auto w-full">
+        <p className="text-xs sm:text-sm text-sky-200/80 font-semibold animate-pulse">
+          {language === 'ar' ? 'انقر في أي مكان للدخول إلى التطبيق' : 'Tap anywhere to enter the app'}
+        </p>
 
-                {/* Start Button */}
-                <div className="w-full max-w-[220px] mt-6">
-                  <button
-                    type="button"
-                    id="splash-enter-btn"
-                    onClick={handleStart}
-                    className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-sky-400 to-cyan-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <span>{language === 'ar' ? 'ابدأ الاستكشاف 🚀' : 'Start Exploring 🚀'}</span>
-                    <ArrowIcon className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Bottom Section: Branding Pill & Indicators */}
-              <div className="relative z-10 flex flex-col items-center gap-4 pb-2">
-                {/* Branding Pill with stars */}
-                <div 
-                  id="splash-branding-pill"
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/95 text-[11px] sm:text-xs font-black shadow-sm"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-                  <span>{language === 'ar' ? 'رَنِيم فَاي | التَّعْلِيمُ المُمْتِعُ' : 'Ranim Fay | Fun Learning'}</span>
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-                </div>
-
-                {/* Indicators: Three small round dots, one highlighted in primary theme color */}
-                <div className="flex items-center gap-2 pt-1" aria-label="Loading Indicators">
-                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400" />
-                  <span className="w-2 h-2 rounded-full bg-white/30" />
-                  <span className="w-2 h-2 rounded-full bg-white/30" />
-                </div>
-              </div>
-            </div>
-          )}
+        {/* Indicators: Three small round navigation/loading dots */}
+        <div className="flex items-center gap-2.5" aria-label="Navigation indicators">
+          <span className="w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-400 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-white/30" />
+          <span className="w-2 h-2 rounded-full bg-white/30" />
         </div>
       </div>
     </div>

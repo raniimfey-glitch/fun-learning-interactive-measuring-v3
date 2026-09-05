@@ -317,7 +317,6 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
             <VesselSVG
               ml={targetML}
               maxMl={1000}
-              goalMl={currentActivity.goalML}
               width={130}
               height={260}
               color={tgtUnit.color}

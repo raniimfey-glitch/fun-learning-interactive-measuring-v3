@@ -19,7 +19,7 @@ export default function App() {
   // selectedActivity: null means on Screen 1 (Home Portal), number 1..4 means on Screen 2 (Active Activity)
   const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
   const [stars, setStars] = useState<number>(0);
-  const [isSplashOpen, setIsSplashOpen] = useState<boolean>(false);
+  const [isSplashOpen, setIsSplashOpen] = useState<boolean>(true);
   const [isScratchpadOpen, setIsScratchpadOpen] = useState<boolean>(false);
   const [isCelebrationOpen, setIsCelebrationOpen] = useState<boolean>(false);
   const [celebrationScore, setCelebrationScore] = useState<{ score: number; total: number }>({
@@ -39,7 +39,11 @@ export default function App() {
   const handleBackToHome = () => {
     playClick();
     speechEngine.stop();
-    setSelectedActivity(null);
+    if (selectedActivity !== null) {
+      setSelectedActivity(null);
+    } else {
+      setIsSplashOpen(true);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -84,10 +88,7 @@ export default function App() {
       <main className="flex-1 w-full max-w-5xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-6 space-y-4 sm:space-y-6 pb-28 sm:pb-24">
         {/* SCREEN 1: Main Home Activity Portal */}
         {selectedActivity === null ? (
-          <HomePortal 
-            onSelectActivity={handleSelectActivity} 
-            onOpenSplash={() => setIsSplashOpen(true)}
-          />
+          <HomePortal onSelectActivity={handleSelectActivity} />
         ) : (
           /* SCREEN 2: Selected Activity with a SINGLE clean Back Button */
           <div className="space-y-4 animate-fade-in">
@@ -178,9 +179,6 @@ export default function App() {
         onClose={() => setIsSplashOpen(false)}
         onStartApp={() => {
           setIsSplashOpen(false);
-          if (selectedActivity === null) {
-            handleSelectActivity(1);
-          }
         }}
       />
     </div>

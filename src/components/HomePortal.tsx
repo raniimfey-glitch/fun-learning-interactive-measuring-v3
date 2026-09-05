@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { playClick } from '../utils/soundEffects';
+import appIconSrc from '../assets/images/app_icon_1788024611307.jpg';
 import { 
   Compass, 
   Droplet, 
@@ -9,16 +10,14 @@ import {
   ArrowRight, 
   ArrowLeft, 
   Sparkles, 
-  CheckCircle2,
-  Smartphone
+  CheckCircle2
 } from 'lucide-react';
 
 interface HomePortalProps {
   onSelectActivity: (id: number) => void;
-  onOpenSplash?: () => void;
 }
 
-export const HomePortal: React.FC<HomePortalProps> = ({ onSelectActivity, onOpenSplash }) => {
+export const HomePortal: React.FC<HomePortalProps> = ({ onSelectActivity }) => {
   const { language, t, isRTL } = useLanguage();
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
@@ -99,34 +98,34 @@ export const HomePortal: React.FC<HomePortalProps> = ({ onSelectActivity, onOpen
         <div className="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-sky-500 via-teal-500 to-indigo-500" />
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1.5 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-black">
-              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-              <span>{t.homeTitle}</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
-              {language === 'ar' ? 'مَرْحَباً بِكَ فِي عَالَمِ قِيَاسِ السَّعَاتِ!' : 'Welcome to the World of Capacities!'}
-            </h2>
-            <p className="text-sm sm:text-base font-semibold text-slate-600 leading-relaxed">
-              {t.homeSubtitle}
-            </p>
-
-            {onOpenSplash && (
-              <div className="pt-1">
-                <button
-                  type="button"
-                  id="open-splash-btn"
-                  onClick={() => {
-                    playClick();
-                    onOpenSplash();
+          <div className="flex items-center gap-4 sm:gap-5">
+            {/* Pulsing App Icon in the Main Interface */}
+            <div className="relative shrink-0">
+              <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-r from-sky-400 to-cyan-400 blur-sm opacity-75 animate-pulse" />
+              <div className="relative w-14 h-14 sm:w-18 sm:h-18 rounded-[18px] bg-slate-900 p-0.5 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
+                <img
+                  src={appIconSrc}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/app-icon.jpg';
                   }}
-                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-black transition-all active:scale-95 shadow-2xs cursor-pointer"
-                >
-                  <Smartphone className="w-3.5 h-3.5 text-sky-600" />
-                  <span>{language === 'ar' ? '✨ شاشة الترحيب (Splash Screen)' : '✨ Welcome Screen'}</span>
-                </button>
+                  alt="App Icon"
+                  className="w-full h-full object-cover rounded-[15px] animate-pulse"
+                />
               </div>
-            )}
+            </div>
+
+            <div className="space-y-1 max-w-2xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-black">
+                <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+                <span>{t.homeTitle}</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+                {language === 'ar' ? 'مَرْحَباً بِكَ فِي عَالَمِ قِيَاسِ السَّعَاتِ!' : 'Welcome to the World of Capacities!'}
+              </h2>
+              <p className="text-xs sm:text-sm md:text-base font-semibold text-slate-600 leading-relaxed">
+                {t.homeSubtitle}
+              </p>
+            </div>
           </div>
 
           <div className="hidden md:flex flex-col items-center justify-center p-3 bg-slate-50 rounded-2xl border border-slate-200 shrink-0">

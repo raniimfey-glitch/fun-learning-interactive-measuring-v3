@@ -269,33 +269,6 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
             stroke={color}
             strokeWidth="2.5"
           />
-
-          {/* Goal Marker Indicator if specified */}
-          {goalMl && goalMl > 0 && goalMl <= maxMl && (
-            <g className="animate-pulse">
-              <line
-                x1={bx - 2}
-                y1={by + bh - bh * (goalMl / maxMl)}
-                x2={bx + bw + 2}
-                y2={by + bh - bh * (goalMl / maxMl)}
-                stroke="#ea580c"
-                strokeWidth="2.5"
-                strokeDasharray="4,2"
-              />
-              <circle
-                cx={bx - 1}
-                cy={by + bh - bh * (goalMl / maxMl)}
-                r="3"
-                fill="#ea580c"
-              />
-              <circle
-                cx={bx + bw + 1}
-                cy={by + bh - bh * (goalMl / maxMl)}
-                r="3"
-                fill="#ea580c"
-              />
-            </g>
-          )}
         </svg>
 
         {/* Quick Speaker Button */}
