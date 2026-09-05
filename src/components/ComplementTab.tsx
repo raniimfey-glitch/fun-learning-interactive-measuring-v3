@@ -101,37 +101,37 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
     .replace('{total}', String(total));
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 min-h-0 flex flex-col justify-between gap-1.5 animate-fade-in overflow-hidden">
       {/* Header Info */}
-      <div id="complement-header-card" className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200">
-        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
-          <span className="text-xs sm:text-sm font-black text-sky-800 bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
+      <div id="complement-header-card" className="bg-white rounded-2xl p-2 sm:p-2.5 shadow-xs border border-slate-200 shrink-0">
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          <span className="text-[10px] sm:text-xs font-black text-sky-800 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
             {badgeText}
           </span>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               id="complement-speak-btn"
               type="button"
               onClick={handleSpeakQuestion}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs sm:text-sm font-black flex items-center gap-1.5 hover:bg-slate-200 transition-colors active:scale-95 shadow-xs"
+              className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-[11px] sm:text-xs font-black flex items-center gap-1 hover:bg-slate-200 transition-colors active:scale-95 shadow-xs cursor-pointer"
             >
-              <Volume2 size={16} />
+              <Volume2 size={14} />
               <span>{t.listenEquation}</span>
             </button>
             <button
               id="complement-scratchpad-btn"
               type="button"
               onClick={onOpenScratch}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs sm:text-sm font-black flex items-center gap-1.5 hover:bg-slate-200 transition-colors shadow-xs"
+              className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-[11px] sm:text-xs font-black flex items-center gap-1 hover:bg-slate-200 transition-colors shadow-xs cursor-pointer"
             >
-              <PenTool size={16} />
+              <PenTool size={14} />
               <span>{t.scratchpadTab}</span>
             </button>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
+        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
           <div
             className="h-full bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full transition-all duration-300"
             style={{ width: `${((compIdx + 1) / total) * 100}%` }}
@@ -140,14 +140,14 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
       </div>
 
       {/* Main Equation Box */}
-      <div id="complement-equation-card" className="bg-white rounded-3xl p-4 sm:p-8 shadow-xs border border-slate-200 text-center">
+      <div id="complement-equation-card" className="flex-1 min-h-0 bg-white rounded-2xl p-2.5 sm:p-3 shadow-xs border border-slate-200 flex flex-col justify-between overflow-hidden text-center">
         {/* Visual Reference Bottle */}
-        <div className="flex justify-center mb-6">
+        <div className="flex-1 min-h-0 flex justify-center items-center py-1 max-h-[30vh]">
           <VesselSVG
             ml={currentQ.refML}
             maxMl={1000}
-            width={125}
-            height={250}
+            width={100}
+            height={190}
             color="#0284C7"
             lightColor="#E0F2FE"
             label={`${currentQ.refML} ${t.mlUnit}`}
@@ -156,8 +156,8 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
         </div>
 
         {/* Math Display with Inputs */}
-        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-sky-50/80 border border-sky-200 max-w-2xl mx-auto mb-6 shadow-xs">
-          <div className={`flex items-center justify-center flex-wrap gap-2 sm:gap-3 text-xl sm:text-3xl md:text-4xl font-black text-slate-900 ${isRTL ? 'direction-rtl' : 'direction-ltr'}`}>
+        <div className="p-2 sm:p-2.5 rounded-xl bg-sky-50 border border-sky-200 max-w-lg mx-auto w-full my-1 shrink-0">
+          <div className={`flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 text-lg sm:text-2xl font-black text-slate-900 ${isRTL ? 'direction-rtl' : 'direction-ltr'}`}>
             {(() => {
               if (currentQ.twoAnswers) {
                 const parts = currentQ.q.split('___');
@@ -174,7 +174,7 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
                         if (e.key === 'Enter') handleCheck();
                       }}
                       placeholder="?"
-                      className="w-24 sm:w-28 h-14 sm:h-16 text-center text-xl sm:text-3xl font-black bg-white border-2 border-slate-300 text-slate-900 rounded-2xl outline-none focus:border-sky-500 shadow-inner"
+                      className="w-18 sm:w-22 h-9 sm:h-11 text-center text-base sm:text-xl font-black bg-white border-2 border-slate-300 text-slate-900 rounded-xl outline-none focus:border-sky-500"
                     />
                     <span>{parts[1]}</span>
                     <input
@@ -187,7 +187,7 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
                         if (e.key === 'Enter') handleCheck();
                       }}
                       placeholder="?"
-                      className="w-20 sm:w-24 h-14 sm:h-16 text-center text-xl sm:text-3xl font-black bg-white border-2 border-slate-300 text-slate-900 rounded-2xl outline-none focus:border-sky-500 shadow-inner"
+                      className="w-16 sm:w-20 h-9 sm:h-11 text-center text-base sm:text-xl font-black bg-white border-2 border-slate-300 text-slate-900 rounded-xl outline-none focus:border-sky-500"
                     />
                     <span>{parts[2]}</span>
                   </>
@@ -208,7 +208,7 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
                       if (e.key === 'Enter') handleCheck();
                     }}
                     placeholder="?"
-                    className="w-28 sm:w-36 h-14 sm:h-16 text-center text-xl sm:text-3xl font-black bg-white border-2 border-slate-300 text-slate-900 rounded-2xl outline-none focus:border-sky-500 shadow-inner"
+                    className="w-20 sm:w-28 h-9 sm:h-11 text-center text-base sm:text-xl font-black bg-white border-2 border-slate-300 text-slate-900 rounded-xl outline-none focus:border-sky-500"
                   />
                   <span>{parts[1]}</span>
                 </>
@@ -218,21 +218,21 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
         </div>
 
         {/* Hint button & message */}
-        <div className="mb-6">
+        <div className="shrink-0 my-0.5">
           {!showHint ? (
             <button
               id="complement-hint-btn"
               type="button"
               onClick={handleSpeakHint}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm sm:text-base font-black hover:bg-amber-100 transition-colors shadow-xs active:scale-95 min-h-[44px]"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-black hover:bg-amber-100 transition-colors shadow-xs active:scale-95 cursor-pointer"
             >
-              <Lightbulb size={18} className="text-amber-600" />
+              <Lightbulb size={14} className="text-amber-600" />
               <span>{t.hintButton}</span>
             </button>
           ) : (
-            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 max-w-lg mx-auto text-sm sm:text-base font-black text-amber-900 animate-fade-in flex items-center justify-center gap-2 shadow-xs">
-              <Lightbulb size={20} className="text-amber-600 shrink-0" />
-              <span>💡 {currentQ.hint}</span>
+            <div className="p-1.5 rounded-xl bg-amber-50 border border-amber-300 max-w-md mx-auto text-xs font-black text-amber-900 animate-fade-in flex items-center justify-center gap-1.5 shadow-xs">
+              <Lightbulb size={16} className="text-amber-600 shrink-0" />
+              <span className="truncate">💡 {currentQ.hint}</span>
             </div>
           )}
         </div>
@@ -243,7 +243,7 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
             id="complement-check-btn"
             type="button"
             onClick={handleCheck}
-            className="w-full max-w-md mx-auto py-4 sm:py-4.5 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-2xl text-base sm:text-xl shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 border border-white/20 min-h-[54px]"
+            className="w-full max-w-xs mx-auto py-2 px-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-xl text-xs sm:text-sm shadow-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer shrink-0 mt-0.5"
           >
             <span>{t.checkAnswer}</span>
           </button>
@@ -253,18 +253,18 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
         {answered && isCorrect !== null && (
           <div
             id="complement-feedback-msg"
-            className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl text-center border mb-6 animate-fade-in flex items-center justify-center gap-2 max-w-lg mx-auto shadow-xs ${
+            className={`p-2 rounded-xl text-center border mt-0.5 animate-fade-in flex items-center justify-center gap-1.5 max-w-xs mx-auto w-full shadow-xs shrink-0 ${
               isCorrect
                 ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 : 'bg-rose-50 border-rose-200 text-rose-800'
             }`}
           >
             {isCorrect ? (
-              <CheckCircle2 className="text-emerald-600 shrink-0" size={24} />
+              <CheckCircle2 className="text-emerald-600 shrink-0" size={18} />
             ) : (
-              <XCircle className="text-rose-600 shrink-0" size={24} />
+              <XCircle className="text-rose-600 shrink-0" size={18} />
             )}
-            <span className="font-black text-base sm:text-xl">
+            <span className="font-black text-xs sm:text-sm truncate">
               {isCorrect
                 ? t.correctAnswerMsg
                 : `${t.wrongAnswerMsg.replace('{answer}', currentQ.a.replace('|', language === 'en' ? ' and ' : ' و '))}`}
@@ -278,10 +278,10 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
             id="complement-next-btn"
             type="button"
             onClick={handleNext}
-            className="w-full max-w-md mx-auto py-4 sm:py-4.5 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-2xl text-base sm:text-xl shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 border border-white/20 min-h-[54px]"
+            className="w-full max-w-xs mx-auto py-2 px-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-xl text-xs sm:text-sm shadow-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer shrink-0 mt-1"
           >
             <span>{compIdx + 1 < total ? t.nextQuestionBtn : t.completedAllBtn}</span>
-            {isRTL ? <ArrowLeft size={22} /> : <ArrowRight size={22} />}
+            {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         )}
       </div>

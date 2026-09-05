@@ -60,19 +60,19 @@ export const SpeechBanner: React.FC = () => {
     <aside
       id="speech-banner"
       aria-live="polite"
-      className="fixed bottom-22 left-4 right-4 sm:right-auto sm:left-6 sm:max-w-md z-30 transition-all duration-300 pointer-events-none"
+      className="fixed bottom-14 sm:bottom-16 left-3 right-3 sm:right-auto sm:left-6 sm:max-w-md z-30 transition-all duration-300 pointer-events-none"
     >
-      <div className="bg-white/95 text-slate-900 backdrop-blur-md rounded-2xl p-3.5 shadow-2xl border-2 border-sky-300 flex items-center gap-3 pointer-events-auto select-none">
+      <div className="bg-white/95 text-slate-900 backdrop-blur-md rounded-xl p-2.5 shadow-xl border-2 border-sky-300 flex items-center gap-2.5 pointer-events-auto select-none">
         {/* Animated Sound Wave Bars */}
-        <div className="flex items-center gap-0.5 h-6 px-1.5 bg-sky-50 rounded-lg border border-sky-200 shrink-0">
+        <div className="flex items-center gap-0.5 h-5 px-1 bg-sky-50 rounded-md border border-sky-200 shrink-0">
           {[40, 90, 60, 100, 70, 30].map((h, i) => (
             <div
               key={i}
-              className={`w-1 bg-sky-500 rounded-full transition-all duration-150 ${
+              className={`w-0.5 sm:w-1 bg-sky-500 rounded-full transition-all duration-150 ${
                 isSpeaking ? 'animate-pulse' : 'h-1 opacity-40'
               }`}
               style={{
-                height: isSpeaking ? `${h}%` : '4px',
+                height: isSpeaking ? `${h}%` : '3px',
                 animationDelay: `${i * 0.12}s`,
               }}
             />

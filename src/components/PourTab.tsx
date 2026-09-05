@@ -194,76 +194,78 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
     .replace('{step}', String(currentActivity.stepML));
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 min-h-0 flex flex-col justify-between gap-1.5 animate-fade-in overflow-hidden">
       {/* Activity Header Card */}
-      <div id="pour-header-card" className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200">
-        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
-          <div className="text-xs sm:text-sm font-black text-sky-800 bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
+      <div id="pour-header-card" className="bg-white rounded-2xl p-2 sm:p-2.5 shadow-xs border border-slate-200 shrink-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="text-[10px] sm:text-xs font-black text-sky-800 bg-sky-50 px-2.5 py-1 rounded-full border border-sky-200">
             {activityBadgeText}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               id="pour-listen-task-btn"
               type="button"
               onClick={handleSpeakTask}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs sm:text-sm font-black flex items-center gap-1.5 hover:bg-slate-200 transition-colors shadow-xs active:scale-95"
+              className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-[11px] sm:text-xs font-black flex items-center gap-1 hover:bg-slate-200 transition-colors shadow-xs active:scale-95 cursor-pointer"
             >
-              <Volume2 size={16} />
+              <Volume2 size={14} />
               <span>{t.listenTask}</span>
             </button>
             <button
               id="pour-reset-btn"
               type="button"
               onClick={() => resetCurrentActivity()}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs sm:text-sm font-black flex items-center gap-1.5 hover:bg-slate-200 transition-colors shadow-xs active:scale-95"
+              className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-[11px] sm:text-xs font-black flex items-center gap-1 hover:bg-slate-200 transition-colors shadow-xs active:scale-95 cursor-pointer"
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={14} />
               <span>{t.restartActivity}</span>
             </button>
           </div>
         </div>
 
         {/* Task description with prompt */}
-        <div className="p-5 rounded-3xl bg-sky-50/80 border border-sky-200 text-center shadow-xs">
-          <div className="text-base sm:text-xl font-black text-slate-900 leading-relaxed">
+        <div className="mt-1.5 p-1.5 sm:p-2 rounded-xl bg-sky-50 border border-sky-200 text-center">
+          <div className="text-xs sm:text-sm font-black text-slate-900 truncate">
             💡 {currentActivity.task}
           </div>
-          <div className="text-sm sm:text-base font-black text-sky-700 mt-1.5">
+          <div className="text-[10px] sm:text-xs font-bold text-sky-700">
             {pourStepDescText}
           </div>
         </div>
       </div>
 
       {/* Main Pouring Scene */}
-      <div id="pour-main-scene" className="bg-white rounded-3xl p-4 sm:p-8 shadow-xs border border-slate-200 text-center">
-        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-around gap-6 sm:gap-8 py-4 w-full">
+      <div id="pour-main-scene" className="flex-1 min-h-0 bg-white rounded-2xl p-2 sm:p-3 shadow-xs border border-slate-200 flex flex-col justify-between overflow-hidden text-center">
+        <div className="flex flex-row items-center justify-around gap-2 py-1 w-full flex-1 min-h-0 max-h-[46vh]">
           {/* Source Vessel */}
-          <div className="flex flex-col items-center order-1">
-            <div className="text-sm sm:text-base font-black text-slate-700 mb-2">{t.sourceVessel}</div>
-            <VesselSVG
-              ml={sourceML}
-              maxMl={1000}
-              width={130}
-              height={260}
-              color={srcUnit.color}
-              lightColor={srcUnit.light}
-              label={sourceML > 0 ? `${sourceML} ${t.mlUnit}` : t.emptyVessel}
-              vocalizedLabel={
-                language === 'en'
-                  ? `Remaining in source: ${sourceML} milliliters`
-                  : `البَاقِي فِي المَصْدَرِ: ${sourceML} مِيلِيلِتْرٍ`
-              }
-              onClick={handlePour}
-              interactive={!isCompleted}
-            />
-            <span className="text-xs sm:text-sm font-black text-slate-500 mt-2">
+          <div className="flex flex-col items-center justify-center flex-1 min-h-0 h-full max-h-full">
+            <div className="text-xs sm:text-sm font-black text-slate-700 mb-1 truncate">{t.sourceVessel}</div>
+            <div className="flex-1 min-h-0 flex items-center justify-center max-h-full">
+              <VesselSVG
+                ml={sourceML}
+                maxMl={1000}
+                width={100}
+                height={200}
+                color={srcUnit.color}
+                lightColor={srcUnit.light}
+                label={sourceML > 0 ? `${sourceML} ${t.mlUnit}` : t.emptyVessel}
+                vocalizedLabel={
+                  language === 'en'
+                    ? `Remaining in source: ${sourceML} milliliters`
+                    : `البَاقِي فِي المَصْدَرِ: ${sourceML} مِيلِيلِتْرٍ`
+                }
+                onClick={handlePour}
+                interactive={!isCompleted}
+              />
+            </div>
+            <span className="text-[10px] sm:text-xs font-black text-slate-500 mt-1 truncate">
               {t.sourceVesselSub}
             </span>
           </div>
 
           {/* Pouring & Verification Center Controls */}
-          <div className="flex flex-col items-center justify-center py-2 sm:pb-6 gap-3 w-full sm:w-auto min-w-[200px] max-w-xs order-3 sm:order-2">
-            <div className="text-2xl sm:text-3xl text-sky-600 animate-pulse hidden sm:block">
+          <div className="flex flex-col items-center justify-center gap-1.5 w-auto min-w-[130px] max-w-[170px] shrink-0">
+            <div className="text-xl text-sky-600 animate-pulse">
               {isRTL ? '⬅️' : '➡️'}
             </div>
             
@@ -273,10 +275,10 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
               type="button"
               onClick={handlePour}
               disabled={isCompleted}
-              className={`w-full py-4 px-6 rounded-2xl text-base sm:text-xl font-black text-white shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 min-h-[52px] ${
+              className={`w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-black text-white shadow-xs flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer ${
                 isCompleted
                   ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-                  : 'bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white shadow-lg shadow-sky-500/25 border border-white/20'
+                  : 'bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white shadow-sky-500/25'
               }`}
             >
               <span>{pourQuarterBtnText}</span>
@@ -288,9 +290,9 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
                 id="pour-undo-btn"
                 type="button"
                 onClick={handleUndoPour}
-                className="w-full py-3 px-4 rounded-xl text-sm sm:text-base font-black bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 flex items-center justify-center gap-1.5 transition-all active:scale-95 min-h-[46px]"
+                className="w-full py-1.5 px-2.5 rounded-xl text-xs font-black bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
               >
-                <Undo2 size={18} />
+                <Undo2 size={14} />
                 <span>{undoPourBtnText}</span>
               </button>
             )}
@@ -301,35 +303,37 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
                 id="pour-verify-btn"
                 type="button"
                 onClick={handleVerify}
-                className="w-full py-4 px-6 rounded-2xl text-base sm:text-xl font-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/20 min-h-[54px]"
+                className="w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xs flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
               >
-                <Check size={24} className="stroke-[3]" />
+                <Check size={18} className="stroke-[3]" />
                 <span>{t.verifyTargetBtn}</span>
               </button>
             )}
           </div>
 
           {/* Target Vessel */}
-          <div className="flex flex-col items-center order-2 sm:order-3">
-            <div className="text-sm sm:text-base font-black text-amber-800 mb-2">
+          <div className="flex flex-col items-center justify-center flex-1 min-h-0 h-full max-h-full">
+            <div className="text-xs sm:text-sm font-black text-amber-800 mb-1 truncate">
               {targetVesselTitle}
             </div>
-            <VesselSVG
-              ml={targetML}
-              maxMl={1000}
-              width={130}
-              height={260}
-              color={tgtUnit.color}
-              lightColor={tgtUnit.light}
-              label={targetML > 0 ? `${targetML} ${t.mlUnit}` : t.emptyVessel}
-              vocalizedLabel={
-                language === 'en'
-                  ? `Volume poured in target: ${targetML} milliliters`
-                  : `المَسْكُوبُ فِي الهَدَفِ: ${targetML} مِيلِيلِتْرٍ`
-              }
-              interactive={false}
-            />
-            <span className="text-xs sm:text-sm font-black text-amber-700 mt-2 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
+            <div className="flex-1 min-h-0 flex items-center justify-center max-h-full">
+              <VesselSVG
+                ml={targetML}
+                maxMl={1000}
+                width={100}
+                height={200}
+                color={tgtUnit.color}
+                lightColor={tgtUnit.light}
+                label={targetML > 0 ? `${targetML} ${t.mlUnit}` : t.emptyVessel}
+                vocalizedLabel={
+                  language === 'en'
+                    ? `Volume poured in target: ${targetML} milliliters`
+                    : `المَسْكُوبُ فِي الهَدَفِ: ${targetML} مِيلِيلِتْرٍ`
+                }
+                interactive={false}
+              />
+            </div>
+            <span className="text-[10px] sm:text-xs font-black text-amber-700 mt-1 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200 truncate">
               {t.currentCapacity} <strong>{targetML} {t.mlUnit}</strong>
             </span>
           </div>
@@ -339,25 +343,25 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
         {feedback && (
           <div
             id="pour-feedback-box"
-            className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl text-center border mb-6 flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in shadow-xs max-w-2xl mx-auto ${
+            className={`p-2 rounded-xl text-center border mt-1 flex items-center justify-center gap-2 animate-fade-in shadow-xs max-w-xl mx-auto w-full shrink-0 ${
               feedback.ok
                 ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
                 : 'bg-amber-50 border-amber-300 text-amber-950'
             }`}
           >
             {feedback.ok ? (
-              <div className="w-11 h-11 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                <Sparkles size={24} />
+              <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                <Sparkles size={14} />
               </div>
             ) : (
-              <div className="w-11 h-11 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
-                <HelpCircle size={24} />
+              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
+                <HelpCircle size={14} />
               </div>
             )}
-            <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
-              <div className="text-base sm:text-xl font-black">{feedback.msg}</div>
+            <div className="flex-1 min-w-0 text-start">
+              <div className="text-xs sm:text-sm font-black truncate">{feedback.msg}</div>
               {feedback.hint && (
-                <div className="text-xs sm:text-base font-bold text-amber-800 mt-1">
+                <div className="text-[10px] sm:text-xs font-bold text-amber-800 truncate">
                   {t.hintPrefix} {feedback.hint}
                 </div>
               )}
@@ -371,14 +375,14 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
             id="pour-next-activity-btn"
             type="button"
             onClick={handleNextActivity}
-            className="w-full max-w-md mx-auto py-4 sm:py-4.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black rounded-2xl text-base sm:text-xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 border border-white/20 min-h-[54px]"
+            className="w-full max-w-sm mx-auto py-2 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black rounded-xl text-xs sm:text-sm shadow-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer shrink-0 mt-1"
           >
             <span>
               {activityIdx + 1 < activities.length
                 ? t.nextActivityBtn
                 : t.allPourCompletedBtn}
             </span>
-            {isRTL ? <ArrowLeft size={22} /> : <ArrowRight size={22} />}
+            {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         )}
       </div>

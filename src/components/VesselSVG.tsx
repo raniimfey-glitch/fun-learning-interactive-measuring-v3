@@ -77,15 +77,16 @@ export const VesselSVG: React.FC<VesselSVGProps> = ({
 
   return (
     <div 
-      className={`inline-flex flex-col items-center select-none ${interactive ? 'cursor-pointer group' : ''} ${className}`}
+      className={`inline-flex flex-col items-center justify-center select-none max-h-full max-w-full min-h-0 ${interactive ? 'cursor-pointer group' : ''} ${className}`}
       onClick={onClick}
     >
-      <div className="relative">
+      <div className="relative flex items-center justify-center max-h-full max-w-full min-h-0">
         <svg
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          className="transition-transform duration-200 group-hover:scale-105"
+          className="transition-transform duration-200 group-hover:scale-105 max-h-full max-w-full w-auto h-auto object-contain"
+          style={{ maxHeight: '100%', maxWidth: '100%' }}
         >
           <defs>
             {/* Glass gradient */}

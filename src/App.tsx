@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
+import { BottomNav } from './components/BottomNav';
 import { HomePortal } from './components/HomePortal';
 import { ExploreTab } from './components/ExploreTab';
 import { PourTab } from './components/PourTab';
@@ -11,7 +12,7 @@ import { SplashScreenModal } from './components/SplashScreenModal';
 import { SpeechBanner } from './components/SpeechBanner';
 import { speechEngine } from './utils/speechEngine';
 import { playClick, playStarEarned } from './utils/soundEffects';
-import { PenTool, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLanguage } from './i18n/LanguageContext';
 
 export default function App() {
@@ -33,7 +34,6 @@ export default function App() {
     playClick();
     speechEngine.stop();
     setSelectedActivity(id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToHome = () => {
@@ -44,7 +44,6 @@ export default function App() {
     } else {
       setIsSplashOpen(true);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const addStar = () => {
@@ -75,7 +74,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col bg-slate-50 text-slate-800 selection:bg-sky-500/20 ${language === 'en' ? "font-['Nunito',sans-serif]" : "font-['Tajawal',sans-serif]"}`}>
+    <div className={`h-[100dvh] max-h-[100dvh] w-full flex flex-col justify-between overflow-hidden bg-slate-50 text-slate-800 selection:bg-sky-500/20 ${language === 'en' ? "font-['Nunito',sans-serif]" : "font-['Tajawal',sans-serif]"}`}>
       {/* Top Navbar */}
       <Navbar
         stars={stars}
@@ -84,41 +83,41 @@ export default function App() {
         onGoHome={handleBackToHome}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 w-full max-w-5xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-6 space-y-4 sm:space-y-6 pb-28 sm:pb-24">
+      {/* Main Container strictly bounded within viewport */}
+      <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto px-2 sm:px-4 py-1.5 sm:py-2 flex flex-col justify-between overflow-hidden">
         {/* SCREEN 1: Main Home Activity Portal */}
         {selectedActivity === null ? (
           <HomePortal onSelectActivity={handleSelectActivity} />
         ) : (
           /* SCREEN 2: Selected Activity with a SINGLE clean Back Button */
-          <div className="space-y-4 animate-fade-in">
+          <div className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden animate-fade-in">
             {/* Dedicated Single Back Navigation Bar */}
             <div 
               id="activity-back-bar"
-              className="bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 border border-slate-200 shadow-sm flex items-center justify-between gap-3"
+              className="shrink-0 bg-white rounded-xl p-1.5 sm:p-2 border border-slate-200 shadow-2xs flex items-center justify-between gap-2 mb-1.5"
             >
               <button
                 id="back-to-home-btn"
                 type="button"
                 onClick={handleBackToHome}
-                className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-sky-700 font-black text-xs sm:text-sm transition-all border border-slate-200 hover:border-sky-300 active:scale-95 shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-sky-700 font-black text-xs transition-all border border-slate-200 hover:border-sky-300 active:scale-95 shadow-xs cursor-pointer"
               >
-                <BackArrowIcon className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600" />
+                <BackArrowIcon className="w-3.5 h-3.5 text-sky-600" />
                 <span>{t.backToHome}</span>
               </button>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-400 hidden sm:inline">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] font-bold text-slate-400 hidden sm:inline">
                   {t.currentActivity}
                 </span>
-                <span className="text-xs sm:text-sm font-black text-slate-800 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200">
+                <span className="text-xs font-black text-slate-800 px-2.5 py-0.5 rounded-lg bg-slate-100 border border-slate-200">
                   {activityTitles[selectedActivity]}
                 </span>
               </div>
             </div>
 
             {/* Selected Activity Content Panel */}
-            <div className="transition-all duration-300">
+            <div className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden">
               {selectedActivity === 1 && <ExploreTab />}
               {selectedActivity === 2 && <PourTab onScoreEarned={addStar} />}
               {selectedActivity === 3 && (
@@ -138,21 +137,15 @@ export default function App() {
         )}
       </main>
 
-      {/* Floating Scratchpad Quick Action Button */}
-      <button
-        id="floating-scratchpad-btn"
-        type="button"
-        onClick={() => {
-          playClick();
-          setIsScratchpadOpen(true);
+      {/* Persistent Bottom Navigation Bar */}
+      <BottomNav
+        selectedActivity={selectedActivity}
+        onSelectActivity={(id) => {
+          speechEngine.stop();
+          setSelectedActivity(id);
         }}
-        title={t.scratchpadTab}
-        className={`fixed bottom-5 sm:bottom-6 z-30 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-xl shadow-sky-600/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform border-2 border-white cursor-pointer ${
-          isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'
-        }`}
-      >
-        <PenTool className="w-6 h-6 sm:w-7 sm:h-7" />
-      </button>
+        onOpenScratch={() => setIsScratchpadOpen(true)}
+      />
 
       {/* Live Speaking Visualizer Waveform Banner */}
       <SpeechBanner />

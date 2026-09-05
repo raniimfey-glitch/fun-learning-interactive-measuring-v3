@@ -177,16 +177,16 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
     .replace('{answer}', currentQ.answer);
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 min-h-0 flex flex-col justify-between gap-1.5 animate-fade-in overflow-hidden">
       {/* Progress Bar & Header */}
-      <div id="exercise-header-card" className="bg-white rounded-3xl p-4 sm:p-7 shadow-xs border border-slate-200">
-        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
-          <div className="flex items-center gap-3">
-            <span className="text-xs sm:text-sm font-black text-sky-800 bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200">
+      <div id="exercise-header-card" className="bg-white rounded-2xl p-2 sm:p-2.5 shadow-xs border border-slate-200 shrink-0">
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] sm:text-xs font-black text-sky-800 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
               {progressLabel}
             </span>
-            <span className="text-sm sm:text-base font-bold text-slate-600">
-              {t.scoreLabel} <strong className="text-sky-600 font-black text-lg">{score}</strong>
+            <span className="text-xs sm:text-sm font-bold text-slate-600">
+              {t.scoreLabel} <strong className="text-sky-600 font-black text-sm sm:text-base">{score}</strong>
             </span>
           </div>
 
@@ -194,15 +194,15 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
             id="exercise-listen-btn"
             type="button"
             onClick={handleSpeakQuestion}
-            className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs sm:text-sm font-black flex items-center gap-1.5 hover:bg-slate-200 transition-colors active:scale-95 shadow-xs"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-[11px] sm:text-xs font-black flex items-center gap-1 hover:bg-slate-200 transition-colors active:scale-95 shadow-xs cursor-pointer"
           >
-            <Volume2 size={16} />
+            <Volume2 size={14} />
             <span>{t.listenQuestion}</span>
           </button>
         </div>
 
         {/* Progress bar line */}
-        <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
+        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
           <div
             className="h-full bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full transition-all duration-300"
             style={{ width: `${((qIdx + 1) / total) * 100}%` }}
@@ -211,25 +211,25 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
       </div>
 
       {/* Question Card */}
-      <div id="exercise-question-card" className="bg-white rounded-3xl p-4 sm:p-8 shadow-xs border border-slate-200">
+      <div id="exercise-question-card" className="flex-1 min-h-0 bg-white rounded-2xl p-2.5 sm:p-3 shadow-xs border border-slate-200 flex flex-col justify-between overflow-hidden">
         {/* Question Text */}
-        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-sky-50/80 border border-sky-200 text-center mb-6 shadow-xs">
-          <h3 className="text-lg sm:text-2xl md:text-3xl font-black text-slate-900 leading-relaxed">
+        <div className="p-2 sm:p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-center shrink-0">
+          <h3 className="text-xs sm:text-base md:text-lg font-black text-slate-900 leading-snug">
             {currentQ.q}
           </h3>
         </div>
 
         {/* Question Type: Visual Hint Bottle if exists */}
         {currentQ.unit && currentQ.type !== 'compare' && (
-          <div className="flex justify-center mb-6">
+          <div className="flex-1 min-h-0 flex justify-center items-center py-1 max-h-[30vh]">
             {(() => {
               const u = units.find((x) => x.id === currentQ.unit) || units[0];
               return (
                 <VesselSVG
                   ml={u.ml}
                   maxMl={1000}
-                  width={125}
-                  height={250}
+                  width={100}
+                  height={190}
                   color={u.color}
                   lightColor={u.light}
                   label={u.name}
@@ -247,7 +247,7 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
         {/* MCQ Type */}
         {currentQ.type === 'mcq' && currentQ.choices && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-2 my-1 shrink-0">
             {currentQ.choices.map((choice, idx) => {
               const isSelected = selectedChoice === choice;
               const isThisCorrect = choice.trim() === currentQ.answer.trim();
@@ -256,9 +256,9 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
               if (answered) {
                 if (isThisCorrect) {
-                  btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-800 font-black ring-4 ring-emerald-200 scale-[1.02]';
+                  btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-800 font-black ring-2 ring-emerald-200 scale-[1.01]';
                 } else if (isSelected && !isThisCorrect) {
-                  btnStyle = 'bg-rose-50 border-rose-500 text-rose-800 font-black ring-4 ring-rose-200';
+                  btnStyle = 'bg-rose-50 border-rose-500 text-rose-800 font-black ring-2 ring-rose-200';
                 } else {
                   btnStyle = 'bg-slate-50 border-slate-200 text-slate-400 opacity-50';
                 }
@@ -276,7 +276,7 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
                       currentQ.vocalizedChoices ? currentQ.vocalizedChoices[idx] : undefined
                     )
                   }
-                  className={`py-4 sm:py-5 px-4 rounded-2xl sm:rounded-3xl border-2 text-lg sm:text-2xl font-black transition-all active:scale-95 shadow-xs flex items-center justify-center gap-2 min-h-[56px] ${btnStyle}`}
+                  className={`py-2 sm:py-3 px-2 rounded-xl border-2 text-xs sm:text-base font-black transition-all active:scale-95 shadow-xs flex items-center justify-center gap-1 min-h-[44px] cursor-pointer ${btnStyle}`}
                 >
                   <span>{choice}</span>
                 </button>
@@ -287,7 +287,7 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
         {/* Compare Type */}
         {currentQ.type === 'compare' && currentQ.a && currentQ.b && (
-          <div className="grid grid-cols-2 gap-4 sm:gap-8 justify-items-center py-2 sm:py-4 mb-6 max-w-lg mx-auto">
+          <div className="grid grid-cols-2 gap-3 justify-items-center py-1 my-1 max-w-sm mx-auto flex-1 min-h-0 max-h-[32vh]">
             {[currentQ.a, currentQ.b].map((unitId) => {
               const u = units.find((x) => x.id === unitId) || units[0];
               const isSelected = selectedChoice === unitId;
@@ -295,8 +295,8 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
               let cardBorder = 'border-slate-200 hover:border-sky-400 bg-slate-50';
               if (answered) {
-                if (isThisCorrect) cardBorder = 'border-emerald-500 bg-emerald-50 ring-4 ring-emerald-200 scale-105';
-                else if (isSelected && !isThisCorrect) cardBorder = 'border-rose-500 bg-rose-50 ring-4 ring-rose-200';
+                if (isThisCorrect) cardBorder = 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200 scale-102';
+                else if (isSelected && !isThisCorrect) cardBorder = 'border-rose-500 bg-rose-50 ring-2 ring-rose-200';
               }
 
               return (
@@ -306,19 +306,19 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
                   type="button"
                   disabled={answered}
                   onClick={() => !answered && handleCompareAnswer(unitId)}
-                  className={`w-full p-4 sm:p-5 rounded-2xl sm:rounded-3xl border-2 flex flex-col items-center cursor-pointer transition-all active:scale-95 shadow-xs ${cardBorder}`}
+                  className={`w-full p-2 rounded-xl border-2 flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95 shadow-xs ${cardBorder}`}
                 >
                   <VesselSVG
                     ml={u.ml}
                     maxMl={1000}
-                    width={110}
-                    height={230}
+                    width={90}
+                    height={160}
                     color={u.color}
                     lightColor={u.light}
                     label={u.name}
                     showMarks
                   />
-                  <span className="text-sm sm:text-base font-black text-slate-800 mt-2">{u.short}</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-800 mt-1">{u.short}</span>
                 </button>
               );
             })}
@@ -327,11 +327,11 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
         {/* Double Question Type */}
         {currentQ.type === 'double' && (
-          <div className="space-y-4 mb-6 max-w-lg mx-auto w-full">
+          <div className="space-y-2 my-1 max-w-sm mx-auto w-full shrink-0">
             {/* Step 1 */}
-            <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-50 border border-slate-200 shadow-xs">
-              <div className="text-sm sm:text-base font-black text-slate-800 mb-3">{currentQ.q1}</div>
-              <div className="flex gap-2 sm:gap-3 items-center">
+            <div className="p-2 sm:p-3 rounded-xl bg-slate-50 border border-slate-200 shadow-xs">
+              <div className="text-xs sm:text-sm font-black text-slate-800 mb-1.5">{currentQ.q1}</div>
+              <div className="flex gap-2 items-center">
                 <input
                   id="double-step-1-input"
                   type="number"
@@ -342,21 +342,21 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
                     if (e.key === 'Enter') handleCheckDouble1();
                   }}
                   placeholder="?"
-                  className="w-24 sm:w-32 h-14 text-center text-xl sm:text-2xl font-black bg-white border-2 border-slate-200 text-slate-900 rounded-2xl outline-none focus:border-sky-500"
+                  className="w-20 sm:w-24 h-9 sm:h-10 text-center text-sm sm:text-base font-black bg-white border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:border-sky-500"
                 />
                 {!doubleStep1Passed && !answered && (
                   <button
                     id="double-step-1-btn"
                     type="button"
                     onClick={handleCheckDouble1}
-                    className="flex-1 h-14 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-2xl text-sm sm:text-base shadow-md active:scale-95"
+                    className="flex-1 h-9 sm:h-10 rounded-xl bg-sky-600 text-white font-black text-xs hover:bg-sky-700 active:scale-95 cursor-pointer"
                   >
                     {t.checkAnswer}
                   </button>
                 )}
                 {doubleStep1Passed && (
-                  <span className="flex items-center gap-1.5 text-emerald-600 text-sm sm:text-base font-black">
-                    <CheckCircle2 size={20} /> {t.correctBadge}
+                  <span className="flex items-center gap-1.5 text-emerald-600 text-xs sm:text-sm font-black">
+                    <CheckCircle2 size={16} /> {t.correctBadge}
                   </span>
                 )}
               </div>
@@ -364,9 +364,9 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
             {/* Step 2 */}
             {doubleStep1Passed && (
-              <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-sky-50/80 border-2 border-sky-300 animate-fade-in shadow-xs">
-                <div className="text-sm sm:text-base font-black text-slate-800 mb-3">{currentQ.q2}</div>
-                <div className="flex gap-2 sm:gap-3 items-center">
+              <div className="p-2 sm:p-3 rounded-xl bg-sky-50/80 border border-sky-300 shadow-xs animate-fade-in">
+                <div className="text-xs sm:text-sm font-black text-slate-800 mb-1.5">{currentQ.q2}</div>
+                <div className="flex gap-2 items-center">
                   <input
                     id="double-step-2-input"
                     type="number"
@@ -377,14 +377,14 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
                       if (e.key === 'Enter') handleCheckDouble2();
                     }}
                     placeholder="?"
-                    className="w-24 sm:w-32 h-14 text-center text-xl sm:text-2xl font-black bg-white border-2 border-sky-400 text-slate-900 rounded-2xl outline-none"
+                    className="w-20 sm:w-24 h-9 sm:h-10 text-center text-sm sm:text-base font-black bg-white border-2 border-sky-400 text-slate-900 rounded-xl outline-none"
                   />
                   {!answered && (
                     <button
                       id="double-step-2-btn"
                       type="button"
                       onClick={handleCheckDouble2}
-                      className="flex-1 h-14 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-2xl text-sm sm:text-base shadow-md active:scale-95"
+                      className="flex-1 h-9 sm:h-10 rounded-xl bg-sky-600 text-white font-black text-xs hover:bg-sky-700 active:scale-95 cursor-pointer"
                     >
                       {t.finalCheckAnswer}
                     </button>
@@ -395,9 +395,9 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
           </div>
         )}
 
-        {/* Visual Recognition Type */}
+        {/* Visual Choices Question Type */}
         {currentQ.type === 'visual' && currentQ.choices && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-2 my-1 shrink-0">
             {currentQ.choices.map((choice, idx) => {
               const isSelected = selectedChoice === choice;
               const isThisCorrect = choice.trim() === currentQ.answer.trim();
@@ -405,9 +405,9 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
 
               if (answered) {
                 if (isThisCorrect) {
-                  btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-800 font-black ring-4 ring-emerald-200 scale-102';
+                  btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-800 font-black ring-2 ring-emerald-200 scale-102';
                 } else if (isSelected && !isThisCorrect) {
-                  btnStyle = 'bg-rose-50 border-rose-500 text-rose-800 font-black ring-4 ring-rose-200';
+                  btnStyle = 'bg-rose-50 border-rose-500 text-rose-800 font-black ring-2 ring-rose-200';
                 }
               }
 
@@ -418,7 +418,7 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
                   type="button"
                   disabled={answered}
                   onClick={() => handleMCQAnswer(choice)}
-                  className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl border-2 text-base sm:text-xl font-black transition-all active:scale-95 shadow-xs min-h-[54px] flex items-center justify-center ${btnStyle}`}
+                  className={`p-2 rounded-xl border-2 text-xs sm:text-sm font-black transition-all active:scale-95 shadow-xs min-h-[44px] flex items-center justify-center cursor-pointer ${btnStyle}`}
                 >
                   {choice}
                 </button>
@@ -431,23 +431,23 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
         {answered && isCorrect !== null && (
           <div
             id="exercise-feedback-msg"
-            className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl text-center border mb-6 animate-fade-in flex items-center justify-center gap-3 shadow-xs max-w-xl mx-auto ${
+            className={`p-2 rounded-xl text-center border mt-1 animate-fade-in flex items-center justify-center gap-2 shadow-xs max-w-sm mx-auto w-full shrink-0 ${
               isCorrect
                 ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 : 'bg-rose-50 border-rose-200 text-rose-800'
             }`}
           >
             {isCorrect ? (
-              <CheckCircle2 className="text-emerald-600 shrink-0" size={24} />
+              <CheckCircle2 className="text-emerald-600 shrink-0" size={18} />
             ) : (
-              <XCircle className="text-rose-600 shrink-0" size={24} />
+              <XCircle className="text-rose-600 shrink-0" size={18} />
             )}
-            <div>
-              <div className="font-black text-base sm:text-xl">
+            <div className="text-start">
+              <div className="font-black text-xs sm:text-sm">
                 {isCorrect ? t.correctAnswerMsg : wrongAnswerMessage}
               </div>
               {currentQ.explanation && (
-                <div className="text-xs sm:text-base font-bold mt-1 text-slate-600">
+                <div className="text-[10px] sm:text-xs font-bold text-slate-600 truncate">
                   {currentQ.explanation}
                 </div>
               )}
@@ -461,10 +461,10 @@ export const ExerciseTab: React.FC<ExerciseTabProps> = ({ onFinish, onCorrectAns
             id="exercise-next-btn"
             type="button"
             onClick={handleNext}
-            className="w-full max-w-md mx-auto py-4 sm:py-4.5 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-2xl text-base sm:text-xl shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 border border-white/20 min-h-[54px]"
+            className="w-full max-w-xs mx-auto py-2 px-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-black rounded-xl text-xs sm:text-sm shadow-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer shrink-0 mt-1"
           >
             <span>{qIdx + 1 < total ? t.nextQuestionBtn : t.finishQuizBtn}</span>
-            {isRTL ? <ArrowLeft size={22} /> : <ArrowRight size={22} />}
+            {isRTL ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </button>
         )}
       </div>

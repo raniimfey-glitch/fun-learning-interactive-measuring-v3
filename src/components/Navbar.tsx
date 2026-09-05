@@ -31,8 +31,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md text-slate-800 shadow-xs px-2.5 sm:px-6 py-2.5 sm:py-3 border-b border-slate-200 w-full">
-      <div className="w-full max-w-5xl mx-auto flex items-center justify-between gap-2">
+    <header className="shrink-0 z-30 bg-white/95 backdrop-blur-md text-slate-800 shadow-xs px-2.5 sm:px-4 py-1.5 sm:py-2 border-b border-slate-200 w-full">
+      <div className="w-full max-w-[900px] mx-auto flex items-center justify-between gap-2">
         {/* Brand with App Icon & Title */}
         <button
           type="button"
@@ -42,11 +42,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               onGoHome();
             }
           }}
-          className="flex items-center gap-2 sm:gap-3 min-w-0 text-start bg-transparent border-0 p-0 cursor-pointer group"
+          className="flex items-center gap-2 sm:gap-2.5 min-w-0 text-start bg-transparent border-0 p-0 cursor-pointer group"
           title={t.appTitle}
         >
           <div className="relative shrink-0 group">
-            <div className="absolute -inset-1 rounded-xl sm:rounded-2xl bg-gradient-to-r from-sky-400 to-cyan-400 opacity-75 blur-xs animate-pulse" />
+            <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-sky-400 to-cyan-400 opacity-75 blur-xs animate-pulse" />
             <img
               src={appIconSrc}
               onError={(e) => {
@@ -54,14 +54,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               alt={t.appIconAlt}
               referrerPolicy="no-referrer"
-              className="relative w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl shadow-xs border-2 border-white object-cover group-hover:scale-105 transition-transform animate-pulse"
+              className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-xs border-2 border-white object-cover group-hover:scale-105 transition-transform animate-pulse"
             />
           </div>
           <div className="min-w-0">
-            <div className="text-[10px] sm:text-xs font-black text-sky-600 leading-none mb-0.5">
+            <div className="text-[9px] sm:text-[11px] font-black text-sky-600 leading-none mb-0.5">
               {t.brandTag}
             </div>
-            <h1 className="text-sm sm:text-lg md:text-xl font-black tracking-tight leading-tight text-slate-900 truncate group-hover:text-sky-600 transition-colors">
+            <h1 className="text-xs sm:text-base font-black tracking-tight leading-tight text-slate-900 truncate group-hover:text-sky-600 transition-colors">
               {t.appTitle}
             </h1>
           </div>
