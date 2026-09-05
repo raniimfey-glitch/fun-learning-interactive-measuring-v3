@@ -235,108 +235,120 @@ export const PourTab: React.FC<PourTabProps> = ({ onScoreEarned }) => {
       </div>
 
       {/* Main Pouring Scene */}
-      <div id="pour-main-scene" className="flex-1 min-h-0 bg-white rounded-2xl p-2 sm:p-3 shadow-xs border border-slate-200 flex flex-col justify-between overflow-hidden text-center">
-        <div className="flex flex-row items-center justify-around gap-2 py-1 w-full flex-1 min-h-0 max-h-[46vh]">
-          {/* Source Vessel */}
-          <div className="flex flex-col items-center justify-center flex-1 min-h-0 h-full max-h-full">
-            <div className="text-xs sm:text-sm font-black text-slate-700 mb-1 truncate">{t.sourceVessel}</div>
-            <div className="flex-1 min-h-0 flex items-center justify-center max-h-full">
-              <VesselSVG
-                ml={sourceML}
-                maxMl={1000}
-                width={100}
-                height={200}
-                color={srcUnit.color}
-                lightColor={srcUnit.light}
-                label={sourceML > 0 ? `${sourceML} ${t.mlUnit}` : t.emptyVessel}
-                vocalizedLabel={
-                  language === 'en'
-                    ? `Remaining in source: ${sourceML} milliliters`
-                    : `البَاقِي فِي المَصْدَرِ: ${sourceML} مِيلِيلِتْرٍ`
-                }
-                onClick={handlePour}
-                interactive={!isCompleted}
-              />
+      <div id="pour-main-scene" className="flex-1 min-h-0 bg-white rounded-2xl p-2 sm:p-2.5 shadow-xs border border-slate-200 flex flex-col justify-between overflow-hidden text-center">
+        {/* Vessels Stage: Source & Target brought close together */}
+        <div className="flex-1 min-h-0 flex items-center justify-center py-1 max-h-[42vh] w-full">
+          <div className="flex items-center justify-center gap-2 sm:gap-6 max-w-lg w-full">
+            {/* Source Vessel (الإناء المملوء) */}
+            <div className="flex flex-col items-center justify-center flex-1 min-w-0 max-w-[165px]">
+              <div className="text-[11px] sm:text-xs font-black text-slate-700 mb-0.5 truncate w-full text-center">
+                {t.sourceVessel}
+              </div>
+              <div className="flex items-center justify-center">
+                <VesselSVG
+                  ml={sourceML}
+                  maxMl={1000}
+                  width={100}
+                  height={190}
+                  color={srcUnit.color}
+                  lightColor={srcUnit.light}
+                  label={sourceML > 0 ? `${sourceML} ${t.mlUnit}` : t.emptyVessel}
+                  vocalizedLabel={
+                    language === 'en'
+                      ? `Remaining in source: ${sourceML} milliliters`
+                      : `البَاقِي فِي المَصْدَرِ: ${sourceML} مِيلِيلِتْرٍ`
+                  }
+                  onClick={handlePour}
+                  interactive={!isCompleted}
+                />
+              </div>
+              <span className="text-[10px] font-black text-slate-500 mt-0.5 truncate">
+                {t.sourceVesselSub}
+              </span>
             </div>
-            <span className="text-[10px] sm:text-xs font-black text-slate-500 mt-1 truncate">
-              {t.sourceVesselSub}
-            </span>
-          </div>
 
-          {/* Pouring & Verification Center Controls */}
-          <div className="flex flex-col items-center justify-center gap-1.5 w-auto min-w-[130px] max-w-[170px] shrink-0">
-            <div className="text-xl text-sky-600 animate-pulse">
-              {isRTL ? '⬅️' : '➡️'}
+            {/* Transfer Direction Indicator (Compact between the two close vessels) */}
+            <div className="flex flex-col items-center justify-center shrink-0 px-0.5">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 shadow-2xs">
+                {isRTL ? <ArrowLeft size={16} className="animate-pulse" /> : <ArrowRight size={16} className="animate-pulse" />}
+              </div>
+              <span className="text-[10px] font-bold text-sky-700 mt-1 whitespace-nowrap">
+                {currentActivity.stepML} {t.mlUnit}
+              </span>
             </div>
-            
-            {/* Pour button */}
+
+            {/* Target Vessel (الإناء الهدف) */}
+            <div className="flex flex-col items-center justify-center flex-1 min-w-0 max-w-[165px]">
+              <div className="text-[11px] sm:text-xs font-black text-amber-800 mb-0.5 truncate w-full text-center">
+                {targetVesselTitle}
+              </div>
+              <div className="flex items-center justify-center">
+                <VesselSVG
+                  ml={targetML}
+                  maxMl={1000}
+                  width={100}
+                  height={190}
+                  color={tgtUnit.color}
+                  lightColor={tgtUnit.light}
+                  label={targetML > 0 ? `${targetML} ${t.mlUnit}` : t.emptyVessel}
+                  vocalizedLabel={
+                    language === 'en'
+                      ? `Volume poured in target: ${targetML} milliliters`
+                      : `المَسْكُوبُ فِي الهَدَفِ: ${targetML} مِيلِيلِتْرٍ`
+                  }
+                  interactive={false}
+                />
+              </div>
+              <span className="text-[10px] font-black text-amber-700 mt-0.5 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 truncate">
+                {t.currentCapacity} <strong>{targetML} {t.mlUnit}</strong>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Controls Bar */}
+        <div className="shrink-0 flex items-center justify-center gap-2 max-w-md mx-auto w-full my-1">
+          {/* Pour button */}
+          <button
+            id="pour-action-btn"
+            type="button"
+            onClick={handlePour}
+            disabled={isCompleted}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black text-white shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer min-h-[38px] ${
+              isCompleted
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                : 'bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white shadow-sky-500/25'
+            }`}
+          >
+            <span>{pourQuarterBtnText}</span>
+          </button>
+
+          {/* Undo Pour button if target has liquid */}
+          {!isCompleted && targetML > 0 && (
             <button
-              id="pour-action-btn"
+              id="pour-undo-btn"
               type="button"
-              onClick={handlePour}
-              disabled={isCompleted}
-              className={`w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-black text-white shadow-xs flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer ${
-                isCompleted
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-                  : 'bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white shadow-sky-500/25'
-              }`}
+              onClick={handleUndoPour}
+              title={undoPourBtnText}
+              className="py-2 px-3 rounded-xl text-xs font-black bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer min-h-[38px] shrink-0"
             >
-              <span>{pourQuarterBtnText}</span>
+              <Undo2 size={15} />
+              <span className="hidden sm:inline">{undoPourBtnText}</span>
             </button>
+          )}
 
-            {/* Undo Pour button if target has liquid */}
-            {!isCompleted && targetML > 0 && (
-              <button
-                id="pour-undo-btn"
-                type="button"
-                onClick={handleUndoPour}
-                className="w-full py-1.5 px-2.5 rounded-xl text-xs font-black bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
-              >
-                <Undo2 size={14} />
-                <span>{undoPourBtnText}</span>
-              </button>
-            )}
-
-            {/* Verify button */}
-            {!isCompleted && (
-              <button
-                id="pour-verify-btn"
-                type="button"
-                onClick={handleVerify}
-                className="w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xs flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
-              >
-                <Check size={18} className="stroke-[3]" />
-                <span>{t.verifyTargetBtn}</span>
-              </button>
-            )}
-          </div>
-
-          {/* Target Vessel */}
-          <div className="flex flex-col items-center justify-center flex-1 min-h-0 h-full max-h-full">
-            <div className="text-xs sm:text-sm font-black text-amber-800 mb-1 truncate">
-              {targetVesselTitle}
-            </div>
-            <div className="flex-1 min-h-0 flex items-center justify-center max-h-full">
-              <VesselSVG
-                ml={targetML}
-                maxMl={1000}
-                width={100}
-                height={200}
-                color={tgtUnit.color}
-                lightColor={tgtUnit.light}
-                label={targetML > 0 ? `${targetML} ${t.mlUnit}` : t.emptyVessel}
-                vocalizedLabel={
-                  language === 'en'
-                    ? `Volume poured in target: ${targetML} milliliters`
-                    : `المَسْكُوبُ فِي الهَدَفِ: ${targetML} مِيلِيلِتْرٍ`
-                }
-                interactive={false}
-              />
-            </div>
-            <span className="text-[10px] sm:text-xs font-black text-amber-700 mt-1 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200 truncate">
-              {t.currentCapacity} <strong>{targetML} {t.mlUnit}</strong>
-            </span>
-          </div>
+          {/* Verify button */}
+          {!isCompleted && (
+            <button
+              id="pour-verify-btn"
+              type="button"
+              onClick={handleVerify}
+              className="flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer min-h-[38px]"
+            >
+              <Check size={16} className="stroke-[3]" />
+              <span>{t.verifyTargetBtn}</span>
+            </button>
+          )}
         </div>
 
         {/* Feedback / Assistance Area */}
