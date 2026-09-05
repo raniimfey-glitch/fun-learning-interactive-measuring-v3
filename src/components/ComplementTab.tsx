@@ -215,30 +215,6 @@ export const ComplementTab: React.FC<ComplementTabProps> = ({ onScoreEarned, onO
               );
             })()}
           </div>
-
-          {/* Quick Helper Chips for Easy Mobile Entry */}
-          {!answered && (
-            <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
-              <span className="text-xs sm:text-sm font-bold text-sky-800">
-                {language === 'en' ? 'Quick insert:' : 'إدراج سريع:'}
-              </span>
-              {[250, 500, 750, 1000].map((num) => (
-                <button
-                  key={num}
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    if (!inp1) setInp1(String(num));
-                    else if (currentQ.twoAnswers && !inp2) setInp2(String(num));
-                    else setInp1(String(num));
-                  }}
-                  className="px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-sky-700 hover:bg-sky-100 text-xs sm:text-sm font-black transition-all shadow-xs active:scale-95"
-                >
-                  {num}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Hint button & message */}
